@@ -3,7 +3,7 @@
 /* Criação dos objetos para o programa */
 
 struct Clientes{
-    int id;
+    char id[6];
     char nome[50];
     double cpf;
     char sexo;
@@ -35,6 +35,33 @@ struct Carrinho{
     double desconto;
     double total;
 };
+
+// Funções Clientes
+
+ void cadastrarClientes(struct Clientes cliente){
+    printf("Cadastro de Clientes:\n");
+
+    printf("Digite o seu nome:\n");
+    scanf("%s", cliente.nome);
+
+    printf("Digite o seu CPF:\n");
+    scanf("%lf", &cliente.cpf);
+
+    printf("Digite o seu sexo (M/F):\n");
+    scanf(" %c", &cliente.sexo);
+
+    printf("Digite o seu telefone fixo:\n");
+    scanf("%s", cliente.tel.fixo);
+
+    printf("Digite o seu telefone movel:\n");
+    scanf("%s", cliente.tel.movel);
+
+    sprintf(cliente.id, "%.0f", cliente.cpf);
+    strncpy(cliente.id, cliente.id, 6);
+    cliente.id[6] = '\0';
+
+    printf("\nCliente cadastrado com sucesso!\n");
+ }
 
 //Função Principal
 int main(){
