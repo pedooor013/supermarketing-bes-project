@@ -39,7 +39,7 @@ struct Carrinho{
 //Função Principal
 int main(){
     int escolhaUsuario;
-    printf("Escolha qual tarefa você deseja fazer:\n\t01) Cadastrar um cliente;\n\t02) Listar clientes;\n\t03) Cadastrar produtos;\n\t04) Listar produtos;\n\t05) Realizar uma compra;\n\t06) Sair;\n");
+    printf("Escolha qual tarefa você deseja fazer:\n\t01) Cadastrar um cliente;\n\t02) Listar clientes;\n\t03) Cadastrar produtos;\n\t04) Listar produtos;\n\t05) Rewalizar uma compra;\n\t06) Sair;\n");
     scanf("%d", &escolhaUsuario);
 
     switch(escolhaUsuario){
