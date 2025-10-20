@@ -38,5 +38,32 @@ struct Carrinho{
 
 //Função Principal
 int main(){
+    int escolhaUsuario;
+    printf("Escolha qual tarefa você deseja fazer:\n\t01) Cadastrar um cliente;\n\t02) Listar clientes;\n\t03) Cadastrar produtos;\n\t04) Listar produtos;\n\t05) Realizar uma compra;\n\t06) Sair;\n");
+    scanf("%d", &escolhaUsuario);
+
+    switch(escolhaUsuario){
+        case 1:
+            cadastrarClientes();
+            break;
+        case 2:
+            listarClientes();
+            break;
+        case 3:
+            cadastrarProdutos();
+            break;
+        case 4:
+            listarProdutos();
+            break;
+        case 5:
+            realizarCompra();
+            break;
+        case 6:
+            printf("\nSaindo...");
+            return 0;
+        default:
+            printf("\nDigite um valor valido...");
+            main();   
+    }
 }
 
