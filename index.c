@@ -36,6 +36,8 @@ struct Carrinho{
     double total;
 };
 
+// Funções Clientes
+
 //Função Principal
 int main(){
 }
