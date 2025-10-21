@@ -1,7 +1,14 @@
 #include <stdio.h>
+#include <string.h>
+#include <locale.h>
 
 /* Criação dos objetos para o programa */
 
+
+struct Telefone{
+    char fixo[15];
+    char movel[16];
+};
 struct Clientes{
     char id[6];
     char nome[50];
@@ -9,10 +16,11 @@ struct Clientes{
     char sexo;
     struct Telefone tel;
 };
+/* 
 
-struct Telefone{
-    char fixo[15];
-    char movel[16];
+struct Modelos{
+    char marca[20];
+    char modelo[20];
 };
 
 struct Produtos{
@@ -21,12 +29,6 @@ struct Produtos{
     struct Modelos models;
     double valor;
 };
-
-struct Modelos{
-    char marca[20];
-    char modelo[20];
-};
-
 struct Carrinho{
     struct Clientes cliente;
     struct Produtos produto[3];
@@ -35,10 +37,10 @@ struct Carrinho{
     double desconto;
     double total;
 };
-
+ */
 // Funções Clientes
 
- void cadastrarClientes(struct Clientes cliente){
+void cadastrarClientes(struct Clientes cliente){
     printf("Cadastro de Clientes:\n");
 
     printf("Digite o seu nome:\n");
@@ -61,29 +63,34 @@ struct Carrinho{
     cliente.id[6] = '\0';
 
     printf("\nCliente cadastrado com sucesso!\n");
- }
+}
 
 //Função Principal
 int main(){
-    int escolhaUsuario;
+    setlocale(LC_ALL, "Portuguese");
+    int escolhaUsuario, contagemDeUsuarios = 0;
+    struct Clientes cliente[10];
     printf("Escolha qual tarefa você deseja fazer:\n\t01) Cadastrar um cliente;\n\t02) Listar clientes;\n\t03) Cadastrar produtos;\n\t04) Listar produtos;\n\t05) Rewalizar uma compra;\n\t06) Sair;\n");
     scanf("%d", &escolhaUsuario);
 
     switch(escolhaUsuario){
         case 1:
-            cadastrarClientes();
+            cadastrarClientes(cliente[contagemDeUsuarios]);
+            printf("\nCadastro realizado:\nID: %s\nNome: %s\nCPF: %lf\nSexo: %s\nTelefone Fixo: %s\nTelefone Movel: %s", cliente[contagemDeUsuarios].id, cliente[contagemDeUsuarios].nome, cliente[contagemDeUsuarios].sexo, cliente[contagemDeUsuarios].tel.fixo, cliente[contagemDeUsuarios].tel.movel);
+            contagemDeUsuarios++;
+            main();
             break;
         case 2:
-            listarClientes();
+            // listarClientes();
             break;
         case 3:
-            cadastrarProdutos();
+            // cadastrarProdutos();
             break;
         case 4:
-            listarProdutos();
+            // listarProdutos();
             break;
         case 5:
-            realizarCompra();
+            // realizarCompra();
             break;
         case 6:
             printf("\nSaindo...");
