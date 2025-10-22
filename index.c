@@ -2,6 +2,12 @@
 
 /* Criação dos objetos para o programa */
 
+struct Telefone{
+    char fixo[15];
+    char movel[16];
+};
+
+
 struct Clientes{
     char id[6];
     char nome[50];
@@ -10,10 +16,6 @@ struct Clientes{
     struct Telefone tel;
 };
 
-struct Telefone{
-    char fixo[15];
-    char movel[16];
-};
 
 struct Produtos{
     int id;
@@ -57,10 +59,18 @@ struct Carrinho{
     scanf("%s", cliente.tel.movel);
 
     sprintf(cliente.id, "%.0f", cliente.cpf);
-    strncpy(cliente.id, cliente.id, 6);
     cliente.id[6] = '\0';
 
     printf("\nCliente cadastrado com sucesso!\n");
+ }
+
+ // Listar Clientes 
+
+ void listarClientes(struct Clientes cliente[], int qtd){
+    printf("Lista de Clientes Cadastrados\n");
+
+    
+
  }
 
 //Função Principal
