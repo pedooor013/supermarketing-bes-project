@@ -19,12 +19,10 @@ struct Clientes{
 };
 /* 
 
-
 struct Modelos{
     char marca[20];
     char modelo[20];
 };
-
 
 
 struct Produtos{
