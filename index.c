@@ -90,34 +90,6 @@ void cadastrarClientes(struct Clientes *cliente){
 
  }
 
- int main() {
-    struct Clientes clientes[10];
-    int qtdClientes = 0, opcao;
-
-    do{
-        printf("\nMenu:\n1. Cadastrar Cliente\n2. Listar Clientes\n3. Sair\nEscolha uma opcao: ");
-        scanf("%d", &opcao);
-
-        switch(opcao){
-            case 1:
-                if(qtdClientes < 10){
-                    cadastrarClientes(&clientes[qtdClientes]);
-                    qtdClientes++;
-                } else {
-                    printf("Limite maximo de clientes cadastrados atingido.\n");
-                }
-                break;
-            case 2:
-                listarClientes(clientes, qtdClientes);
-                break;
-            case 3:
-                printf("Saindo do programa.\n");
-                break;
-            default:
-                printf("Opcao invalida. Tente novamente.\n");
-        }
-    } while (opcao != 3);
- }
 //Função Principal
 int main(){
     setlocale(LC_ALL, "Portuguese");
@@ -128,9 +100,15 @@ int main(){
 
     switch(escolhaUsuario){
         case 1:
+        if(contagemDeUsuarios >= 10){
+            printf("\nNão é possível realizar o cadastro de mais clientes! Limite da base de dados atingido! \n");
+            main();
+        }
             cadastrarClientes(cliente[contagemDeUsuarios]);
-            printf("\nCadastro realizado:\nID: %s\nNome: %s\nCPF: %s\nSexo: %c\nTelefone Fixo: %s\nTelefone Movel: %s", cliente[contagemDeUsuarios]->id, cliente[contagemDeUsuarios]->nome, cliente[contagemDeUsuarios]->cpf, cliente[contagemDeUsuarios]->sexo, cliente[contagemDeUsuarios]->tel.fixo, cliente[contagemDeUsuarios]->tel.movel);
-            contagemDeUsuarios++;
+            if(contagemDeUsuarios < 10){
+                printf("\nCadastro realizado:\nID: %s\nNome: %s\nCPF: %s\nSexo: %c\nTelefone Fixo: %s\nTelefone Movel: %s", cliente[contagemDeUsuarios]->id, cliente[contagemDeUsuarios]->nome, cliente[contagemDeUsuarios]->cpf, cliente[contagemDeUsuarios]->sexo, cliente[contagemDeUsuarios]->tel.fixo, cliente[contagemDeUsuarios]->tel.movel);
+                contagemDeUsuarios++;
+            }
             main();
             break;
         case 2:
@@ -151,6 +129,8 @@ int main(){
         default:
             printf("\nDigite um valor valido...");
             main();   
-    }return 0;
+    }
+    
+    return 0;
 }
 
