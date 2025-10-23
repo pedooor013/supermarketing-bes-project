@@ -13,7 +13,7 @@ struct Telefone{
 struct Clientes{
     char id[6];
     char nome[50];
-    double cpf;
+    char cpf[12];
     char sexo;
     struct Telefone tel;
 };
@@ -42,26 +42,28 @@ struct Carrinho{
  */
 // Funções Clientes
 
-void cadastrarClientes(struct Clientes cliente){
+void cadastrarClientes(struct Clientes *cliente){
     printf("Cadastro de Clientes:\n");
 
     printf("Digite o seu nome:\n");
-    scanf("%s", cliente.nome);
+    scanf("%s", cliente->nome);
 
     printf("Digite o seu CPF:\n");
-    scanf("%lf", &cliente.cpf);
+    scanf("%11s", cliente->cpf);
 
     printf("Digite o seu sexo (M/F):\n");
-    scanf(" %c", &cliente.sexo);
+    scanf(" %c", &cliente->sexo);
 
     printf("Digite o seu telefone fixo:\n");
-    scanf("%s", cliente.tel.fixo);
+    scanf("%s", cliente->tel.fixo);
 
     printf("Digite o seu telefone movel:\n");
-    scanf("%s", cliente.tel.movel);
+    scanf("%s", cliente->tel.movel);
 
-    sprintf(cliente.id, "%.0f", cliente.cpf);
-    cliente.id[6] = '\0';
+    for(int i = 0; i < 6; i++){
+        cliente -> id[i] = cliente -> cpf[i];
+    }
+    cliente->id[6] = '\0';
 
     printf("\nCliente cadastrado com sucesso!\n");
 }
@@ -71,10 +73,51 @@ void cadastrarClientes(struct Clientes cliente){
  void listarClientes(struct Clientes cliente[], int qtd){
     printf("Lista de Clientes Cadastrados\n");
 
-    
+    if (qtd == 0) {
+        printf("Nenhum cliente cadastrado.\n");
+        return;
+    }
+
+    for(int i = 0; i < qtd; i++){
+        printf("\n Cliente %d:\n", i + 1);
+        printf("ID: %s\n", cliente[i].id);
+        printf("Nome: %s\n", cliente[i].nome);
+        printf("CPF: %s\n", cliente[i].cpf);
+        printf("Sexo: %c\n", cliente[i].sexo);
+        printf("Telefone Fixo: %s\n", cliente[i].tel.fixo);
+        printf("Telefone Movel: %s\n", cliente[i].tel.movel);
+    }
 
  }
 
+ int main() {
+    struct Clientes clientes[10];
+    int qtdClientes = 0, opcao;
+
+    do{
+        printf("\nMenu:\n1. Cadastrar Cliente\n2. Listar Clientes\n3. Sair\nEscolha uma opcao: ");
+        scanf("%d", &opcao);
+
+        switch(opcao){
+            case 1:
+                if(qtdClientes < 10){
+                    cadastrarClientes(&clientes[qtdClientes]);
+                    qtdClientes++;
+                } else {
+                    printf("Limite maximo de clientes cadastrados atingido.\n");
+                }
+                break;
+            case 2:
+                listarClientes(clientes, qtdClientes);
+                break;
+            case 3:
+                printf("Saindo do programa.\n");
+                break;
+            default:
+                printf("Opcao invalida. Tente novamente.\n");
+        }
+    } while (opcao != 3);
+ }
 //Função Principal
 int main(){
     setlocale(LC_ALL, "Portuguese");
