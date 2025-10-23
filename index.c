@@ -122,14 +122,14 @@ void cadastrarClientes(struct Clientes *cliente){
 int main(){
     setlocale(LC_ALL, "Portuguese");
     int escolhaUsuario, contagemDeUsuarios = 0;
-    struct Clientes cliente[10];
+    struct Clientes *cliente[10];
     printf("Escolha qual tarefa você deseja fazer:\n\t01) Cadastrar um cliente;\n\t02) Listar clientes;\n\t03) Cadastrar produtos;\n\t04) Listar produtos;\n\t05) Rewalizar uma compra;\n\t06) Sair;\n");
     scanf("%d", &escolhaUsuario);
 
     switch(escolhaUsuario){
         case 1:
             cadastrarClientes(cliente[contagemDeUsuarios]);
-            printf("\nCadastro realizado:\nID: %s\nNome: %s\nCPF: %lf\nSexo: %s\nTelefone Fixo: %s\nTelefone Movel: %s", cliente[contagemDeUsuarios].id, cliente[contagemDeUsuarios].nome, cliente[contagemDeUsuarios].sexo, cliente[contagemDeUsuarios].tel.fixo, cliente[contagemDeUsuarios].tel.movel);
+            printf("\nCadastro realizado:\nID: %s\nNome: %s\nCPF: %s\nSexo: %c\nTelefone Fixo: %s\nTelefone Movel: %s", cliente[contagemDeUsuarios]->id, cliente[contagemDeUsuarios]->nome, cliente[contagemDeUsuarios]->cpf, cliente[contagemDeUsuarios]->sexo, cliente[contagemDeUsuarios]->tel.fixo, cliente[contagemDeUsuarios]->tel.movel);
             contagemDeUsuarios++;
             main();
             break;
@@ -151,6 +151,6 @@ int main(){
         default:
             printf("\nDigite um valor valido...");
             main();   
-    }
+    }return 0;
 }
 
