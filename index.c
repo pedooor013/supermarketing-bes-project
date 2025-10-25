@@ -91,6 +91,42 @@ void cadastrarClientes(struct Clientes *cliente){
 
  }
 
+ int main(){
+    setlocale(LC_ALL, "Portuguese");
+    struct Clientes clientes[10];
+    int qtdClientes = 0;
+    int opcao;
+
+    do{
+        printf("\nMenu de Clientes:\n");
+        printf("1) Cadastrar Cliente\n");
+        printf("2) Listar Clientes\n");
+        printf("3) Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+
+        switch(opcao){
+            case 1:
+                if(qtdClientes < 10){
+                    cadastrarClientes(&clientes[qtdClientes]);
+                    qtdClientes++;
+                } else {
+                    printf("\nLimite de clientes atingido!\n");
+                }
+                break;
+            case 2:
+                listarClientes(clientes, qtdClientes);
+                break;
+            case 3:
+                printf("\nSaindo...\n");
+                break;
+            default:
+                printf("\nOpcao invalida. Tente novamente.\n");
+        }
+    } while(opcao != 3);
+
+    return 0;
+}
 
 // Funções de produtos
 
