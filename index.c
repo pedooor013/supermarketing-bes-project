@@ -17,20 +17,20 @@ struct Clientes{
     char sexo;
     struct Telefone tel;
 };
-/* 
 
 struct Modelos{
     char marca[20];
     char modelo[20];
-};
-
-
-struct Produtos{
-    int id;
-    char nome[20];
-    struct Modelos models;
-    double valor;
-};
+    };
+    
+    
+    struct Produtos{
+        int id;
+        char nome[20];
+        struct Modelos models;
+        double valor;
+        };
+/* 
 struct Carrinho{
     struct Clientes cliente;
     struct Produtos produto[3];
@@ -45,6 +45,7 @@ struct Carrinho{
 void cadastrarClientes(struct Clientes *cliente){
     printf("Cadastro de Clientes:\n");
 
+    getchar(); // vai limpar o buffer do teclado
     printf("Digite o seu nome:\n");
     scanf("%49[^\n]", cliente->nome);
 
@@ -77,6 +78,7 @@ void cadastrarClientes(struct Clientes *cliente){
         return;
     }
 
+    printf("\nLista de Clientes:\n");
     for(int i = 0; i < qtd; i++){
         printf("\n Cliente %d:\n", i + 1);
         printf("ID: %s\n", cliente[i].id);
@@ -89,11 +91,56 @@ void cadastrarClientes(struct Clientes *cliente){
 
  }
 
+
+// Funções de produtos
+
+/* struct produto {
+    
+    int codigo;
+    char marca[30];
+    char modelo[40];
+    
+}; */
+
+int codigo_produto(int teste);
+
+int cadastrarProdutos() {
+    
+    
+    struct produto p1;
+    
+    printf("Digite a marca do produto: ");
+    scanf("%s", &p1.marca);
+    
+    printf("Digite o modelo do produto: ");
+    scanf("%s", &p1.modelo);
+    
+    p1.codigo = codigo_produto(2);
+    
+    printf("A marca do produto é %s\n", p1.marca);
+    printf("O modelo do produto é %s\n", p1.modelo);
+    printf("O código do produto é %d\n ", p1.codigo);
+    return 0;
+}
+
+int codigo_produto(int teste){
+    int retorno;
+    
+    retorno = teste + teste;
+    
+    return retorno;
+    
+}
+
 //Função Principal
 int main(){
     setlocale(LC_ALL, "Portuguese");
     int escolhaUsuario, contagemDeUsuarios = 0;
     struct Clientes cliente[10];
+
+    int escolhaUsuario, contagemDeUsuarios = 0, limiteUsuarios = 10;
+    struct Clientes *cliente[10];
+
     printf("Escolha qual tarefa você deseja fazer:\n\t01) Cadastrar um cliente;\n\t02) Listar clientes;\n\t03) Cadastrar produtos;\n\t04) Listar produtos;\n\t05) Rewalizar uma compra;\n\t06) Sair;\n");
     scanf("%d", &escolhaUsuario);
 
@@ -108,7 +155,7 @@ int main(){
             // listarClientes();
             break;
         case 3:
-            // cadastrarProdutos();
+            cadastrarProdutos();
             break;
         case 4:
             // listarProdutos();
