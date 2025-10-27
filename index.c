@@ -1,16 +1,20 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <locale.h>
 
+int numero_produtos = 10;
+
 /* Criação dos objetos para o programa */
 
-
-struct Telefone{
+struct Telefone
+{
     char fixo[15];
     char movel[16];
 };
 
-struct Clientes{
+struct Clientes
+{
     char id[6];
     char nome[50];
     char cpf[12];
@@ -18,31 +22,34 @@ struct Clientes{
     struct Telefone tel;
 };
 
-struct Modelos{
+struct Modelos
+{
     char marca[20];
     char modelo[20];
-    };
-    
-    
-    struct Produtos{
-        int id;
-        char nome[20];
-        struct Modelos models;
-        double valor;
-        };
-/* 
-struct Carrinho{
+};
+
+struct produto
+{
+    int codigo;
+    char marca[20];
+    char modelo[40];
+    float valor;
+};
+
+struct Carrinho
+{
     struct Clientes cliente;
-    struct Produtos produto[3];
+    struct produto prod[3];
     int quantidade[3];
     double subtotal;
     double desconto;
     double total;
 };
- */
+
 // Funções Clientes
 
-void cadastrarClientes(struct Clientes *cliente){
+void cadastrarClientes(struct Clientes *cliente)
+{
     printf("Cadastro de Clientes:\n");
 
     getchar(); // vai limpar o buffer do teclado
@@ -61,25 +68,29 @@ void cadastrarClientes(struct Clientes *cliente){
     printf("Digite o seu telefone movel:\n");
     scanf("%s", cliente->tel.movel);
 
-    for(int i = 0; i < 6; i++){
-        cliente -> id[i] = cliente -> cpf[i];
+    for (int i = 0; i < 6; i++)
+    {
+        cliente->id[i] = cliente->cpf[i];
     }
     cliente->id[6] = '\0';
 
     printf("\nCliente cadastrado com sucesso!\n");
 }
 
- // Listar Clientes 
+// Listar Clientes
 
- void listarClientes(struct Clientes cliente[], int qtd){
+void listarClientes(struct Clientes cliente[], int qtd)
+{
 
-    if (qtd == 0) {
+    if (qtd == 0)
+    {
         printf("Nenhum cliente cadastrado.\n");
         return;
     }
 
     printf("\nLista de Clientes:\n");
-    for(int i = 0; i < qtd; i++){
+    for (int i = 0; i < qtd; i++)
+    {
         printf("\n Cliente %d:\n", i + 1);
         printf("ID: %s\n", cliente[i].id);
         printf("Nome: %s\n", cliente[i].nome);
@@ -88,16 +99,113 @@ void cadastrarClientes(struct Clientes *cliente){
         printf("Telefone Fixo: %s\n", cliente[i].tel.fixo);
         printf("Telefone Movel: %s\n", cliente[i].tel.movel);
     }
+}
 
- }
+// Funções de produtos
 
- int main(){
+int codigo_produto(const char *marca, const char *modelo);
+void listarProdutos(struct produto *produtos, int total);
+
+int cadastrarProdutos()
+{
+    struct produto *estoque;
+    int i;
+    int produtos_cadastrados = 0;
+
+    printf("--- Cadastro de %d Produtos ---\n", numero_produtos);
+
+    estoque = (struct produto *)malloc(numero_produtos * sizeof(struct produto));
+
+    if (estoque == NULL)
+    {
+        return 0;
+    }
+
+    for (i = 0; i < numero_produtos; i++)
+    {
+        printf("\n--- Produto %d/%d ---\n", i + 1, numero_produtos);
+
+        struct produto *p = &estoque[i];
+
+        printf("Digite a marca do produto: ");
+        scanf("%29s", p->marca);
+
+        printf("Digite o modelo do produto: ");
+        scanf("%39s", p->modelo);
+
+        printf("Digite o valor do produto: ");
+        scanf("%f", &p->valor);
+
+        p->codigo = codigo_produto(p->marca, p->modelo);
+
+        printf("Código gerado: %d\n", p->codigo);
+
+        produtos_cadastrados++;
+    }
+
+    printf("\n--- FIM DO CADASTRO ---\n");
+
+    listarProdutos(estoque, produtos_cadastrados);
+
+    free(estoque);
+
+    return 0;
+}
+
+int codigo_produto(const char *marca, const char *modelo)
+{
+    if (strlen(marca) < 2 || strlen(modelo) < 2)
+    {
+        return 0;
+    }
+
+    int C1 = (int)marca[0];
+    int C2 = (int)marca[1];
+
+    int C3 = (int)modelo[0];
+    int C4 = (int)modelo[1];
+
+    long long hash_ll = (long long)C1 * 31 * 31 * 31 +
+                        (long long)C2 * 31 * 31 +
+                        (long long)C3 * 31 +
+                        (long long)C4;
+
+    return (int)hash_ll;
+}
+
+void listarProdutos(struct produto *produtos, int total)
+{
+    int i;
+
+    printf("\n=======================================================\n");
+    printf("                  LISTA DE PRODUTOS CADASTRADOS\n");
+    printf("=======================================================\n");
+    printf("| %-5s | %-10s | %-15s | %-8s | %-7s |\n", "ITEM", "MARCA", "MODELO", "VALOR", "HASH");
+    printf("-------------------------------------------------------\n");
+
+    for (i = 0; i < total; i++)
+    {
+        printf("| %-5d | %-10s | %-15s | R$%-5.2f | %-7d |\n",
+               i + 1,
+               produtos[i].marca,
+               produtos[i].modelo,
+               produtos[i].valor,
+               produtos[i].codigo);
+    }
+    printf("=======================================================\n");
+}
+
+// Função Principal
+
+int main()
+{
     setlocale(LC_ALL, "Portuguese");
     struct Clientes clientes[10];
     int qtdClientes = 0;
     int opcao;
 
-    do{
+    do
+    {
         printf("\nMenu de Clientes:\n");
         printf("1) Cadastrar Cliente\n");
         printf("2) Listar Clientes\n");
@@ -105,106 +213,29 @@ void cadastrarClientes(struct Clientes *cliente){
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
 
-        switch(opcao){
-            case 1:
-                if(qtdClientes < 10){
-                    cadastrarClientes(&clientes[qtdClientes]);
-                    qtdClientes++;
-                } else {
-                    printf("\nLimite de clientes atingido!\n");
-                }
-                break;
-            case 2:
-                listarClientes(clientes, qtdClientes);
-                break;
-            case 3:
-                printf("\nSaindo...\n");
-                break;
-            default:
-                printf("\nOpcao invalida. Tente novamente.\n");
-        }
-    } while(opcao != 3);
-
-    return 0;
-}
-
-// Funções de produtos
-
-/* struct produto {
-    
-    int codigo;
-    char marca[30];
-    char modelo[40];
-    
-}; */
-
-int codigo_produto(int teste);
-
-int cadastrarProdutos() {
-    
-    
-    struct produto p1;
-    
-    printf("Digite a marca do produto: ");
-    scanf("%s", &p1.marca);
-    
-    printf("Digite o modelo do produto: ");
-    scanf("%s", &p1.modelo);
-    
-    p1.codigo = codigo_produto(2);
-    
-    printf("A marca do produto é %s\n", p1.marca);
-    printf("O modelo do produto é %s\n", p1.modelo);
-    printf("O código do produto é %d\n ", p1.codigo);
-    return 0;
-}
-
-int codigo_produto(int teste){
-    int retorno;
-    
-    retorno = teste + teste;
-    
-    return retorno;
-    
-}
-
-//Função Principal
-int main(){
-    setlocale(LC_ALL, "Portuguese");
-    int escolhaUsuario, contagemDeUsuarios = 0;
-    struct Clientes cliente[10];
-
-    int escolhaUsuario, contagemDeUsuarios = 0, limiteUsuarios = 10;
-    struct Clientes *cliente[10];
-
-    printf("Escolha qual tarefa você deseja fazer:\n\t01) Cadastrar um cliente;\n\t02) Listar clientes;\n\t03) Cadastrar produtos;\n\t04) Listar produtos;\n\t05) Rewalizar uma compra;\n\t06) Sair;\n");
-    scanf("%d", &escolhaUsuario);
-
-    switch(escolhaUsuario){
+        switch (opcao)
+        {
         case 1:
-            cadastrarClientes(cliente[contagemDeUsuarios]);
-            printf("\nCadastro realizado:\nID: %s\nNome: %s\nCPF: %s\nSexo: %c\nTelefone Fixo: %s\nTelefone Movel: %s", cliente[contagemDeUsuarios].id, cliente[contagemDeUsuarios].nome, cliente[contagemDeUsuarios].cpf, cliente[contagemDeUsuarios].sexo, cliente[contagemDeUsuarios].tel.fixo, cliente[contagemDeUsuarios].tel.movel);
-            contagemDeUsuarios++;
-            main();
+            if (qtdClientes < 10)
+            {
+                cadastrarClientes(&clientes[qtdClientes]);
+                qtdClientes++;
+            }
+            else
+            {
+                printf("\nLimite de clientes atingido!\n");
+            }
             break;
         case 2:
-            // listarClientes();
+            listarClientes(clientes, qtdClientes);
             break;
         case 3:
-            cadastrarProdutos();
+            printf("\nSaindo...\n");
             break;
-        case 4:
-            // listarProdutos();
-            break;
-        case 5:
-            // realizarCompra();
-            break;
-        case 6:
-            printf("\nSaindo...");
-            return 0;
         default:
-            printf("\nDigite um valor valido...");
-            main();   
-    }return 0;
-}
+            printf("\nOpcao invalida. Tente novamente.\n");
+        }
+    } while (opcao != 3);
 
+    return 0;
+}
