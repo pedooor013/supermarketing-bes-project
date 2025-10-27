@@ -3,7 +3,10 @@
 #include <string.h>
 #include <locale.h>
 
-int numero_produtos = 10;
+int limiteClientes = 15, limiteProdutos = 15;
+
+int numClientesCadastrados = 0;
+int numProdutosCadastrados = 0;
 
 /* Criação dos objetos para o programa */
 
@@ -79,7 +82,7 @@ void cadastrarClientes(struct Clientes *cliente)
 
 // Listar Clientes
 
-void listarClientes(struct Clientes cliente[], int qtd)
+void listarClientes(struct Clientes cliente[limiteClientes], int qtd)
 {
 
     if (qtd == 0)
@@ -104,52 +107,26 @@ void listarClientes(struct Clientes cliente[], int qtd)
 // Funções de produtos
 
 int codigo_produto(const char *marca, const char *modelo);
-void listarProdutos(struct produto *produtos, int total);
+void listarProdutos(struct produto *produtos, int numProdutosCadastrados);
 
-int cadastrarProdutos()
+void cadastrarProdutos(struct produto *produtos)
 {
-    struct produto *estoque;
-    int i;
-    int produtos_cadastrados = 0;
+    printf("\n--- Cadastro de Produtos ---\n");
 
-    printf("--- Cadastro de %d Produtos ---\n", numero_produtos);
+    printf("Digite a marca do produto: ");
+    scanf("%29s", produtos->marca);
 
-    estoque = (struct produto *)malloc(numero_produtos * sizeof(struct produto));
+    printf("Digite o modelo do produto: ");
+    scanf("%39s", produtos->modelo);
 
-    if (estoque == NULL)
-    {
-        return 0;
-    }
+    printf("Digite o valor do produto: ");
+    scanf("%f", &produtos->valor);
 
-    for (i = 0; i < numero_produtos; i++)
-    {
-        printf("\n--- Produto %d/%d ---\n", i + 1, numero_produtos);
+    produtos->codigo = codigo_produto(produtos->marca, produtos->modelo);
 
-        struct produto *p = &estoque[i];
+    printf("Código gerado: %d\n", produtos->codigo);
 
-        printf("Digite a marca do produto: ");
-        scanf("%29s", p->marca);
-
-        printf("Digite o modelo do produto: ");
-        scanf("%39s", p->modelo);
-
-        printf("Digite o valor do produto: ");
-        scanf("%f", &p->valor);
-
-        p->codigo = codigo_produto(p->marca, p->modelo);
-
-        printf("Código gerado: %d\n", p->codigo);
-
-        produtos_cadastrados++;
-    }
-
-    printf("\n--- FIM DO CADASTRO ---\n");
-
-    listarProdutos(estoque, produtos_cadastrados);
-
-    free(estoque);
-
-    return 0;
+    printf("\n--- Produto Cadastrado com Sucesso ---\n");
 }
 
 int codigo_produto(const char *marca, const char *modelo)
@@ -173,7 +150,7 @@ int codigo_produto(const char *marca, const char *modelo)
     return (int)hash_ll;
 }
 
-void listarProdutos(struct produto *produtos, int total)
+void listarProdutos(struct produto *produtos, int numProdutosCadastrados)
 {
     int i;
 
@@ -183,14 +160,14 @@ void listarProdutos(struct produto *produtos, int total)
     printf("| %-5s | %-10s | %-15s | %-8s | %-7s |\n", "ITEM", "MARCA", "MODELO", "VALOR", "HASH");
     printf("-------------------------------------------------------\n");
 
-    for (i = 0; i < total; i++)
+    for (i = 0; i < numProdutosCadastrados; i++)
     {
         printf("| %-5d | %-10s | %-15s | R$%-5.2f | %-7d |\n",
-               i + 1,
-               produtos[i].marca,
-               produtos[i].modelo,
-               produtos[i].valor,
-               produtos[i].codigo);
+                i + 1,
+                produtos[i].marca,
+                produtos[i].modelo,
+                produtos[i].valor,
+                produtos[i].codigo);
     }
     printf("=======================================================\n");
 }
@@ -200,8 +177,9 @@ void listarProdutos(struct produto *produtos, int total)
 int main()
 {
     setlocale(LC_ALL, "Portuguese");
-    struct Clientes clientes[10];
-    int qtdClientes = 0;
+    struct Clientes clientes[limiteClientes];
+    struct produto produtos[limiteProdutos];
+
     int opcao;
 
     do
@@ -209,29 +187,51 @@ int main()
         printf("\nMenu de Clientes:\n");
         printf("1) Cadastrar Cliente\n");
         printf("2) Listar Clientes\n");
-        printf("3) Sair\n");
+        printf("3) Cadastrar Produtos\n");
+        printf("4) Listar Produtos\n");
+        printf("5) Carrinho de Compras\n");
+        printf("6) Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
 
         switch (opcao)
         {
         case 1:
-            if (qtdClientes < 10)
+            if (numClientesCadastrados < 10)
             {
-                cadastrarClientes(&clientes[qtdClientes]);
-                qtdClientes++;
+                cadastrarClientes(&clientes[numClientesCadastrados]);
+                numClientesCadastrados++;
             }
             else
             {
                 printf("\nLimite de clientes atingido!\n");
             }
+            main();
             break;
         case 2:
-            listarClientes(clientes, qtdClientes);
+            listarClientes(clientes, numClientesCadastrados);
+            main();
             break;
         case 3:
-            printf("\nSaindo...\n");
+            cadastrarProdutos(&produtos[numProdutosCadastrados]);
+            printf("\nNUMERO DE PRODUTOS CADASTRADOS ===> %d\n", numProdutosCadastrados);
+
+            numProdutosCadastrados++;
+            main();
             break;
+        case 4:
+            listarProdutos(produtos, numProdutosCadastrados);
+            main();
+            break;
+        /* case 5:
+            (produtos, numProdutosCadastrados);
+            main();
+            break; */
+        case 6:
+            printf("\nSaindo...\n");
+            main();
+            break;
+
         default:
             printf("\nOpcao invalida. Tente novamente.\n");
         }
