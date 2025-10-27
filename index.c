@@ -5,8 +5,7 @@
 
 int limiteClientes = 15, limiteProdutos = 15;
 
-int numClientesCadastrados = 0;
-int numProdutosCadastrados = 0;
+int numClientesCadastrados = 0, numProdutosCadastrados = 0;
 
 /* Criação dos objetos para o programa */
 
@@ -82,17 +81,17 @@ void cadastrarClientes(struct Clientes *cliente)
 
 // Listar Clientes
 
-void listarClientes(struct Clientes cliente[limiteClientes], int qtd)
+void listarClientes(struct Clientes cliente[])
 {
 
-    if (qtd == 0)
+    if (numClientesCadastrados == 0)
     {
         printf("Nenhum cliente cadastrado.\n");
         return;
     }
 
     printf("\nLista de Clientes:\n");
-    for (int i = 0; i < qtd; i++)
+    for (int i = 0; i < numClientesCadastrados; i++)
     {
         printf("\n Cliente %d:\n", i + 1);
         printf("ID: %s\n", cliente[i].id);
@@ -163,11 +162,11 @@ void listarProdutos(struct produto *produtos, int numProdutosCadastrados)
     for (i = 0; i < numProdutosCadastrados; i++)
     {
         printf("| %-5d | %-10s | %-15s | R$%-5.2f | %-7d |\n",
-                i + 1,
-                produtos[i].marca,
-                produtos[i].modelo,
-                produtos[i].valor,
-                produtos[i].codigo);
+               i + 1,
+               produtos[i].marca,
+               produtos[i].modelo,
+               produtos[i].valor,
+               produtos[i].codigo);
     }
     printf("=======================================================\n");
 }
@@ -209,13 +208,11 @@ int main()
             main();
             break;
         case 2:
-            listarClientes(clientes, numClientesCadastrados);
+            listarClientes(clientes);
             main();
             break;
         case 3:
             cadastrarProdutos(&produtos[numProdutosCadastrados]);
-            printf("\nNUMERO DE PRODUTOS CADASTRADOS ===> %d\n", numProdutosCadastrados);
-
             numProdutosCadastrados++;
             main();
             break;
