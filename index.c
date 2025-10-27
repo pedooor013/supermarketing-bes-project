@@ -48,7 +48,86 @@ struct Carrinho
     double total;
 };
 
-// Funções Clientes
+// Declarações Funções
+
+//CLientes
+
+void cadastrarClientes(struct Clientes *cliente);
+
+void listarClientes(struct Clientes cliente[]);
+
+// Funções de produtos
+
+int codigo_produto(const char *marca, const char *modelo);
+
+void listarProdutos(struct produto *produtos, int numProdutosCadastrados);
+
+void cadastrarProdutos(struct produto *produtos);
+
+// Função Principal
+
+int main()
+{
+    setlocale(LC_ALL, "Portuguese");
+    struct Clientes clientes[limiteClientes];
+    struct produto produtos[limiteProdutos];
+
+    int opcao;
+
+    do
+    {
+        printf("\nMenu de Clientes:\n");
+        printf("1) Cadastrar Cliente\n");
+        printf("2) Listar Clientes\n");
+        printf("3) Cadastrar Produtos\n");
+        printf("4) Listar Produtos\n");
+        printf("5) Carrinho de Compras\n");
+        printf("6) Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+
+        switch (opcao)
+        {
+        case 1:
+            if (numClientesCadastrados < 10)
+            {
+                cadastrarClientes(&clientes[numClientesCadastrados]);
+                numClientesCadastrados++;
+            }
+            else
+            {
+                printf("\nLimite de clientes atingido!\n");
+            }
+            main();
+            break;
+        case 2:
+            listarClientes(clientes);
+            main();
+            break;
+        case 3:
+            cadastrarProdutos(&produtos[numProdutosCadastrados]);
+            numProdutosCadastrados++;
+            main();
+            break;
+        case 4:
+            listarProdutos(produtos, numProdutosCadastrados);
+            main();
+            break;
+        /* case 5:
+            (produtos, numProdutosCadastrados);
+            main();
+            break; */
+        case 6:
+            printf("\nSaindo...\n");
+            break;
+
+        default:
+            printf("\nOpcao invalida. Tente novamente.\n");
+        }
+    } while (opcao != 3);
+
+    return 0;
+}
 
 void cadastrarClientes(struct Clientes *cliente)
 {
@@ -79,8 +158,6 @@ void cadastrarClientes(struct Clientes *cliente)
     printf("\nCliente cadastrado com sucesso!\n");
 }
 
-// Listar Clientes
-
 void listarClientes(struct Clientes cliente[])
 {
 
@@ -102,11 +179,6 @@ void listarClientes(struct Clientes cliente[])
         printf("Telefone Movel: %s\n", cliente[i].tel.movel);
     }
 }
-
-// Funções de produtos
-
-int codigo_produto(const char *marca, const char *modelo);
-void listarProdutos(struct produto *produtos, int numProdutosCadastrados);
 
 void cadastrarProdutos(struct produto *produtos)
 {
@@ -169,70 +241,4 @@ void listarProdutos(struct produto *produtos, int numProdutosCadastrados)
                produtos[i].codigo);
     }
     printf("=======================================================\n");
-}
-
-// Função Principal
-
-int main()
-{
-    setlocale(LC_ALL, "Portuguese");
-    struct Clientes clientes[limiteClientes];
-    struct produto produtos[limiteProdutos];
-
-    int opcao;
-
-    do
-    {
-        printf("\nMenu de Clientes:\n");
-        printf("1) Cadastrar Cliente\n");
-        printf("2) Listar Clientes\n");
-        printf("3) Cadastrar Produtos\n");
-        printf("4) Listar Produtos\n");
-        printf("5) Carrinho de Compras\n");
-        printf("6) Sair\n");
-        printf("Escolha uma opcao: ");
-        scanf("%d", &opcao);
-
-        switch (opcao)
-        {
-        case 1:
-            if (numClientesCadastrados < 10)
-            {
-                cadastrarClientes(&clientes[numClientesCadastrados]);
-                numClientesCadastrados++;
-            }
-            else
-            {
-                printf("\nLimite de clientes atingido!\n");
-            }
-            main();
-            break;
-        case 2:
-            listarClientes(clientes);
-            main();
-            break;
-        case 3:
-            cadastrarProdutos(&produtos[numProdutosCadastrados]);
-            numProdutosCadastrados++;
-            main();
-            break;
-        case 4:
-            listarProdutos(produtos, numProdutosCadastrados);
-            main();
-            break;
-        /* case 5:
-            (produtos, numProdutosCadastrados);
-            main();
-            break; */
-        case 6:
-            printf("\nSaindo...\n");
-            main();
-            break;
-
-        default:
-            printf("\nOpcao invalida. Tente novamente.\n");
-        }
-    } while (opcao != 3);
-
-    return 0;
 }
