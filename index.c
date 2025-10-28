@@ -92,34 +92,27 @@ int main()
             if (numClientesCadastrados < 10)
             {
                 cadastrarClientes(&clientes[numClientesCadastrados]);
-                numClientesCadastrados++;
             }
             else
             {
                 printf("\nLimite de clientes atingido!\n");
             }
-            main();
             break;
         case 2:
             listarClientes(clientes);
-            main();
             break;
         case 3:
             cadastrarProdutos(&produtos[numProdutosCadastrados]);
-            numProdutosCadastrados++;
-            main();
             break;
         case 4:
             listarProdutos(produtos, numProdutosCadastrados);
-            main();
             break;
         /* case 5:
             (produtos, numProdutosCadastrados);
-            main();
             break; */
         case 6:
             printf("\nSaindo...\n");
-            break;
+            return 0;
 
         default:
             printf("\nOpcao invalida. Tente novamente.\n");
@@ -129,32 +122,35 @@ int main()
     return 0;
 }
 
-void cadastrarClientes(struct Clientes *cliente)
+void cadastrarClientes(struct Clientes *c)
 {
+
     printf("Cadastro de Clientes:\n");
 
     getchar(); // vai limpar o buffer do teclado
     printf("Digite o seu nome:\n");
-    scanf("%49[^\n]", cliente->nome);
+    fgets(c->nome, sizeof(c->nome), stdin);
+    c->nome[strcspn(c->nome, "\n")] = '\0';
 
     printf("Digite o seu CPF:\n");
-    scanf("%11s", cliente->cpf);
+    scanf("%11s", c->cpf);
 
     printf("Digite o seu sexo (M/F):\n");
-    scanf(" %c", &cliente->sexo);
+    scanf(" %c", &c->sexo);
 
     printf("Digite o seu telefone fixo:\n");
-    scanf("%s", cliente->tel.fixo);
+    scanf("%s", c->tel.fixo);
 
     printf("Digite o seu telefone movel:\n");
-    scanf("%s", cliente->tel.movel);
+    scanf("%s", c->tel.movel);
 
     for (int i = 0; i < 6; i++)
     {
-        cliente->id[i] = cliente->cpf[i];
+        c->id[i] = c->cpf[i];
     }
-    cliente->id[6] = '\0';
+    c->id[6] = '\0';
 
+    numClientesCadastrados++;
     printf("\nCliente cadastrado com sucesso!\n");
 }
 
@@ -170,6 +166,8 @@ void listarClientes(struct Clientes cliente[])
     printf("\nLista de Clientes:\n");
     for (int i = 0; i < numClientesCadastrados; i++)
     {
+        int tamanhoNomeUsuario = strlen(cliente[i].nome); 
+
         printf("\n Cliente %d:\n", i + 1);
         printf("ID: %s\n", cliente[i].id);
         printf("Nome: %s\n", cliente[i].nome);
