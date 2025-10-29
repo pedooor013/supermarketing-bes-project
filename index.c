@@ -35,7 +35,7 @@ struct produto
     int codigo;
     char marca[20];
     char modelo[40];
-    float valor;
+    double valor;
 };
 
 struct Carrinho
@@ -179,65 +179,61 @@ void listarClientes(struct Clientes cliente[])
     }
 }
 
-void cadastrarProdutos(struct produto *produtos)
+#include <stdio.h>
+
+struct produto
 {
-    printf("\n--- Cadastro de Produtos ---\n");
+    int codigo;
+    char marca[20];
+    char modelo[40];
+    double valor;
+};
 
-    printf("Digite a marca do produto: ");
-    scanf("%29s", produtos->marca);
+void codigo_produto(char *marca, char *modelo, int *cod);
+int main(){
 
-    printf("Digite o modelo do produto: ");
-    scanf("%39s", produtos->modelo);
-
-    printf("Digite o valor do produto: ");
-    scanf("%f", &produtos->valor);
-
-    produtos->codigo = codigo_produto(produtos->marca, produtos->modelo);
-
-    printf("Código gerado: %d\n", produtos->codigo);
-
-    printf("\n--- Produto Cadastrado com Sucesso ---\n");
-}
-
-int codigo_produto(const char *marca, const char *modelo)
-{
-    if (strlen(marca) < 2 || strlen(modelo) < 2)
-    {
-        return 0;
-    }
-
-    int C1 = (int)marca[0];
-    int C2 = (int)marca[1];
-
-    int C3 = (int)modelo[0];
-    int C4 = (int)modelo[1];
-
-    long long hash_ll = (long long)C1 * 31 * 31 * 31 +
-                        (long long)C2 * 31 * 31 +
-                        (long long)C3 * 31 +
-                        (long long)C4;
-
-    return (int)hash_ll;
-}
-
-void listarProdutos(struct produto *produtos, int numProdutosCadastrados)
-{
+    struct produto MeusProdutos[2];
+    
     int i;
+    
+    for(i = 0; i < 2; i++){
+        
+        printf("Digite a marca do produto: ");
+        scanf("%s", MeusProdutos[i].marca);
 
-    printf("\n=======================================================\n");
-    printf("                  LISTA DE PRODUTOS CADASTRADOS\n");
-    printf("=======================================================\n");
-    printf("| %-5s | %-10s | %-15s | %-8s | %-7s |\n", "ITEM", "MARCA", "MODELO", "VALOR", "HASH");
-    printf("-------------------------------------------------------\n");
+        printf("Digite o modelo do produto: ");
+        scanf("%s", MeusProdutos[i].modelo);
 
-    for (i = 0; i < numProdutosCadastrados; i++)
-    {
-        printf("| %-5d | %-10s | %-15s | R$%-5.2f | %-7d |\n",
-               i + 1,
-               produtos[i].marca,
-               produtos[i].modelo,
-               produtos[i].valor,
-               produtos[i].codigo);
+        printf("Digite o valor do produto: ");
+        scanf("%lf", &MeusProdutos[i].valor);
+    
+        codigo_produto(MeusProdutos[i].marca, MeusProdutos[i].modelo, &MeusProdutos[i].codigo);
+        
     }
-    printf("=======================================================\n");
+    
+    printf("Produtos cadastrados com sucesso\n");
+    printf("Mostrar Relatório final\n");
+    
+    for(i = 0; i < 2; i++){
+        printf("O código: %d\n", MeusProdutos[i].codigo);
+        printf("A marca: %s\n", MeusProdutos[i].marca);
+        printf("O modelo: %s\n ", MeusProdutos[i].modelo);
+        printf("O valor: %.2lf\n ", MeusProdutos[i].valor);
+        
+    }
+   
+    
+    return 0;
+}
+
+void codigo_produto(char *marca, char *modelo, int *cod){
+    *cod = (int) (
+        
+        (long)marca[0] * 31 * 31 *31 + 
+        (long)marca[1] *31 *31 +
+        (long)modelo[0] *31 +
+        (long)modelo[1] * 1
+        
+        );
+    
 }
