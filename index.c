@@ -35,7 +35,7 @@ struct produto
     int codigo;
     char marca[20];
     char modelo[40];
-    float valor;
+    double valor;
 };
 
 struct Carrinho
@@ -175,4 +175,67 @@ void listarClientes(struct Clientes cliente[])
         printf("Telefone Fixo: %s\n", cliente[i].tel.fixo);
         printf("Telefone Movel: %s\n", cliente[i].tel.movel);
     }
+<<<<<<< HEAD
 }
+=======
+}
+
+#include <stdio.h>
+
+struct produto
+{
+    int codigo;
+    char marca[20];
+    char modelo[40];
+    double valor;
+};
+
+void codigo_produto(char *marca, char *modelo, int *cod);
+int main(){
+
+    struct produto MeusProdutos[2];
+    
+    int i;
+    
+    for(i = 0; i < 2; i++){
+        
+        printf("Digite a marca do produto: ");
+        scanf("%s", MeusProdutos[i].marca);
+
+        printf("Digite o modelo do produto: ");
+        scanf("%s", MeusProdutos[i].modelo);
+
+        printf("Digite o valor do produto: ");
+        scanf("%lf", &MeusProdutos[i].valor);
+    
+        codigo_produto(MeusProdutos[i].marca, MeusProdutos[i].modelo, &MeusProdutos[i].codigo);
+        
+    }
+    
+    printf("Produtos cadastrados com sucesso\n");
+    printf("Mostrar Relatório final\n");
+    
+    for(i = 0; i < 2; i++){
+        printf("O código: %d\n", MeusProdutos[i].codigo);
+        printf("A marca: %s\n", MeusProdutos[i].marca);
+        printf("O modelo: %s\n ", MeusProdutos[i].modelo);
+        printf("O valor: %.2lf\n ", MeusProdutos[i].valor);
+        
+    }
+   
+    
+    return 0;
+}
+
+void codigo_produto(char *marca, char *modelo, int *cod){
+    *cod = (int) (
+        
+        (long)marca[0] * 31 * 31 *31 + 
+        (long)marca[1] *31 *31 +
+        (long)modelo[0] *31 +
+        (long)modelo[1] * 1
+        
+        );
+    
+}
+>>>>>>> 720fe7e28ccbb8abe2c9a73b7aabd19a0c8360f1
