@@ -52,7 +52,7 @@ struct Carrinho
 
 //CLientes
 
-void cadastrarClientes(struct Clientes *cliente);
+void cadastrarClientes(struct Clientes c);
 
 void listarClientes(struct Clientes cliente[]);
 
@@ -89,9 +89,9 @@ int main()
         switch (opcao)
         {
         case 1:
-            if (numClientesCadastrados < 10)
+            if (numClientesCadastrados < limiteClientes)
             {
-                cadastrarClientes(&clientes[numClientesCadastrados]);
+                cadastrarClientes(clientes[numClientesCadastrados]);
             }
             else
             {
@@ -117,40 +117,38 @@ int main()
         default:
             printf("\nOpcao invalida. Tente novamente.\n");
         }
-    } while (opcao != 3);
+    } while (opcao != 6);
 
     return 0;
 }
 
-void cadastrarClientes(struct Clientes *c)
+void cadastrarClientes(struct Clientes c)
 {
 
     printf("Cadastro de Clientes:\n");
-
-
     
-    printf("Digite o seu nome:\n");
     getchar();
-    fgets(c->nome, sizeof(c->nome), stdin);
-    c->nome[strcspn(c->nome, "\n")] = '\0'; 
+
+    printf("Digite o seu nome:\n");
+    scanf("%s", c.nome);
 
     printf("Digite o seu CPF:\n");
-    scanf("%11s", c->cpf);
+    scanf("%11s", c.cpf);
 
     printf("Digite o seu sexo (M/F):\n");
-    scanf(" %c", &c->sexo);
+    scanf(" %c", &c.sexo);
 
     printf("Digite o seu telefone fixo:\n");
-    scanf("%s", c->tel.fixo);
+    scanf("%s", c.tel.fixo);
 
     printf("Digite o seu telefone movel:\n");
-    scanf("%s", c->tel.movel);
+    scanf("%s", c.tel.movel);
 
     for (int i = 0; i < 6; i++)
     {
-        c->id[i] = c->cpf[i];
+        c.id[i] = c.cpf[i];
     }
-    c->id[6] = '\0';
+    c.id[6] = '\0';
 
     numClientesCadastrados++;
     printf("\nCliente cadastrado com sucesso!\n");
@@ -177,67 +175,4 @@ void listarClientes(struct Clientes cliente[])
         printf("Telefone Fixo: %s\n", cliente[i].tel.fixo);
         printf("Telefone Movel: %s\n", cliente[i].tel.movel);
     }
-}
-
-void cadastrarProdutos(struct produto *produtos)
-{
-    printf("\n--- Cadastro de Produtos ---\n");
-
-    printf("Digite a marca do produto: ");
-    scanf("%29s", produtos->marca);
-
-    printf("Digite o modelo do produto: ");
-    scanf("%39s", produtos->modelo);
-
-    printf("Digite o valor do produto: ");
-    scanf("%f", &produtos->valor);
-
-    produtos->codigo = codigo_produto(produtos->marca, produtos->modelo);
-
-    printf("Código gerado: %d\n", produtos->codigo);
-
-    printf("\n--- Produto Cadastrado com Sucesso ---\n");
-}
-
-int codigo_produto(const char *marca, const char *modelo)
-{
-    if (strlen(marca) < 2 || strlen(modelo) < 2)
-    {
-        return 0;
-    }
-
-    int C1 = (int)marca[0];
-    int C2 = (int)marca[1];
-
-    int C3 = (int)modelo[0];
-    int C4 = (int)modelo[1];
-
-    long long hash_ll = (long long)C1 * 31 * 31 * 31 +
-                        (long long)C2 * 31 * 31 +
-                        (long long)C3 * 31 +
-                        (long long)C4;
-
-    return (int)hash_ll;
-}
-
-void listarProdutos(struct produto *produtos, int numProdutosCadastrados)
-{
-    int i;
-
-    printf("\n=======================================================\n");
-    printf("                  LISTA DE PRODUTOS CADASTRADOS\n");
-    printf("=======================================================\n");
-    printf("| %-5s | %-10s | %-15s | %-8s | %-7s |\n", "ITEM", "MARCA", "MODELO", "VALOR", "HASH");
-    printf("-------------------------------------------------------\n");
-
-    for (i = 0; i < numProdutosCadastrados; i++)
-    {
-        printf("| %-5d | %-10s | %-15s | R$%-5.2f | %-7d |\n",
-               i + 1,
-               produtos[i].marca,
-               produtos[i].modelo,
-               produtos[i].valor,
-               produtos[i].codigo);
-    }
-    printf("=======================================================\n");
 }
