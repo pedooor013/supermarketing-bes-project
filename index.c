@@ -127,10 +127,12 @@ void cadastrarClientes(struct Clientes *c)
 
     printf("Cadastro de Clientes:\n");
 
-    getchar(); // vai limpar o buffer do teclado
+
+    
     printf("Digite o seu nome:\n");
+    getchar();
     fgets(c->nome, sizeof(c->nome), stdin);
-    c->nome[strcspn(c->nome, "\n")] = '\0';
+    c->nome[strcspn(c->nome, "\n")] = '\0'; 
 
     printf("Digite o seu CPF:\n");
     scanf("%11s", c->cpf);
@@ -166,7 +168,6 @@ void listarClientes(struct Clientes cliente[])
     printf("\nLista de Clientes:\n");
     for (int i = 0; i < numClientesCadastrados; i++)
     {
-        int tamanhoNomeUsuario = strlen(cliente[i].nome); 
 
         printf("\n Cliente %d:\n", i + 1);
         printf("ID: %s\n", cliente[i].id);
