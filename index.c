@@ -18,51 +18,20 @@ struct Telefone
 struct Clientes
 {
     char id[6];
+    char teste[100];
     char nome[50];
     char cpf[12];
     char sexo;
     struct Telefone tel;
 };
 
-struct Modelos
-{
-    char marca[20];
-    char modelo[20];
-};
-
-struct produto
-{
-    int codigo;
-    char marca[20];
-    char modelo[40];
-    double valor;
-};
-
-struct Carrinho
-{
-    struct Clientes cliente;
-    struct produto prod[3];
-    int quantidade[3];
-    double subtotal;
-    double desconto;
-    double total;
-};
-
 // Declarações Funções
 
-//CLientes
+// CLientes
 
-void cadastrarClientes(struct Clientes c);
+struct Clientes cadastrarClientes(struct Clientes cliente);
 
 void listarClientes(struct Clientes cliente[]);
-
-// Funções de produtos
-
-int codigo_produto(const char *marca, const char *modelo);
-
-void listarProdutos(struct produto *produtos, int numProdutosCadastrados);
-
-void cadastrarProdutos(struct produto *produtos);
 
 // Função Principal
 
@@ -70,7 +39,6 @@ int main()
 {
     setlocale(LC_ALL, "Portuguese");
     struct Clientes clientes[limiteClientes];
-    struct produto produtos[limiteProdutos];
 
     int opcao;
 
@@ -85,13 +53,15 @@ int main()
         printf("6) Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
+        getchar(); // limpa o '\n' deixado pelo scanf
 
         switch (opcao)
         {
         case 1:
             if (numClientesCadastrados < limiteClientes)
             {
-                cadastrarClientes(clientes[numClientesCadastrados]);
+                clientes[numClientesCadastrados] = cadastrarClientes(clientes[numClientesCadastrados]);
+                numClientesCadastrados++;
             }
             else
             {
@@ -102,15 +72,6 @@ int main()
             listarClientes(clientes);
             break;
         case 3:
-            cadastrarProdutos(&produtos[numProdutosCadastrados]);
-            break;
-        case 4:
-            listarProdutos(produtos, numProdutosCadastrados);
-            break;
-        /* case 5:
-            (produtos, numProdutosCadastrados);
-            break; */
-        case 6:
             printf("\nSaindo...\n");
             return 0;
 
@@ -122,116 +83,53 @@ int main()
     return 0;
 }
 
-void cadastrarClientes(struct Clientes c)
+struct Clientes cadastrarClientes(struct Clientes cliente)
 {
+    printf("\nCadastro de cliente:\n");
 
-    printf("Cadastro de Clientes:\n");
+    printf("\nDigite o nome do cliente:\n");
+    scanf("%[^\n]", cliente.nome);
     
-    getchar();
+    printf("\nDigite o CPF do cliente:\n");
+    scanf("%s", cliente.cpf);
 
-    printf("Digite o seu nome:\n");
-    scanf("%s", c.nome);
+    printf("\nDigite o sexo (M/F) do cliente:\n");
+    scanf(" %c", &cliente.sexo);
 
-    printf("Digite o seu CPF:\n");
-    scanf("%11s", c.cpf);
+    printf("\nDigite o tefone fixo do cliente:\n");
+    scanf("%s", cliente.tel.fixo);
 
-    printf("Digite o seu sexo (M/F):\n");
-    scanf(" %c", &c.sexo);
+    printf("\nDigite o telefone movel do cliente:\n");
+    scanf("%s", cliente.tel.movel);
 
-    printf("Digite o seu telefone fixo:\n");
-    scanf("%s", c.tel.fixo);
-
-    printf("Digite o seu telefone movel:\n");
-    scanf("%s", c.tel.movel);
-
-    for (int i = 0; i < 6; i++)
+    for (int contadorDeCasasCPF = 0; contadorDeCasasCPF < 6; contadorDeCasasCPF++)
     {
-        c.id[i] = c.cpf[i];
+        cliente.id[contadorDeCasasCPF] = cliente.cpf[contadorDeCasasCPF];
     }
-    c.id[6] = '\0';
+    cliente.id[6] = '\0';
 
-    numClientesCadastrados++;
-    printf("\nCliente cadastrado com sucesso!\n");
+    printf("\n=== Cadastro do Cliente com ID: %s realizado! \n", cliente.id);
+
+    return cliente;
 }
 
 void listarClientes(struct Clientes cliente[])
 {
+    int contadorClientes = 0;
 
-    if (numClientesCadastrados == 0)
+    printf("\n=== Listagem de Clientes Cadastrados ===\n");
+
+    for (contadorClientes = 0; contadorClientes < numClientesCadastrados; contadorClientes++)
     {
-        printf("Nenhum cliente cadastrado.\n");
-        return;
+        printf("ID: %s\n", cliente[contadorClientes].id);
+        printf("Nome: %s\n", cliente[contadorClientes].nome);
+        printf("CPF: %s\n", cliente[contadorClientes].cpf);
+        printf("Sexo (M/F): %c\n", cliente[contadorClientes].sexo);
+        printf("Telefone Fixo: %s\n", cliente[contadorClientes].tel.fixo);
+        printf("Telefone Movel: %s\n", cliente[contadorClientes].tel.movel);
+
+        printf("\n==============\n");
     }
 
-    printf("\nLista de Clientes:\n");
-    for (int i = 0; i < numClientesCadastrados; i++)
-    {
-
-        printf("\n Cliente %d:\n", i + 1);
-        printf("ID: %s\n", cliente[i].id);
-        printf("Nome: %s\n", cliente[i].nome);
-        printf("CPF: %s\n", cliente[i].cpf);
-        printf("Sexo: %c\n", cliente[i].sexo);
-        printf("Telefone Fixo: %s\n", cliente[i].tel.fixo);
-        printf("Telefone Movel: %s\n", cliente[i].tel.movel);
-    }
-}
-
-#include <stdio.h>
-
-struct produto
-{
-    int codigo;
-    char marca[20];
-    char modelo[40];
-    double valor;
-};
-
-void codigo_produto(char *marca, char *modelo, int *cod);
-int main(){
-
-    struct produto MeusProdutos[2];
-    
-    int i;
-    
-    for(i = 0; i < 2; i++){
-        
-        printf("Digite a marca do produto: ");
-        scanf("%s", MeusProdutos[i].marca);
-
-        printf("Digite o modelo do produto: ");
-        scanf("%s", MeusProdutos[i].modelo);
-
-        printf("Digite o valor do produto: ");
-        scanf("%lf", &MeusProdutos[i].valor);
-    
-        codigo_produto(MeusProdutos[i].marca, MeusProdutos[i].modelo, &MeusProdutos[i].codigo);
-        
-    }
-    
-    printf("Produtos cadastrados com sucesso\n");
-    printf("Mostrar Relatório final\n");
-    
-    for(i = 0; i < 2; i++){
-        printf("O código: %d\n", MeusProdutos[i].codigo);
-        printf("A marca: %s\n", MeusProdutos[i].marca);
-        printf("O modelo: %s\n ", MeusProdutos[i].modelo);
-        printf("O valor: %.2lf\n ", MeusProdutos[i].valor);
-        
-    }
-   
-    
-    return 0;
-}
-
-void codigo_produto(char *marca, char *modelo, int *cod){
-    *cod = (int) (
-        
-        (long)marca[0] * 31 * 31 *31 + 
-        (long)marca[1] *31 *31 +
-        (long)modelo[0] *31 +
-        (long)modelo[1] * 1
-        
-        );
-    
+    printf("\n=== Contamos com %d usuarios cadastrados na nossa base ===\n", numClientesCadastrados);
 }
