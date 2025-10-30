@@ -175,9 +175,6 @@ void listarClientes(struct Clientes cliente[])
         printf("Telefone Fixo: %s\n", cliente[i].tel.fixo);
         printf("Telefone Movel: %s\n", cliente[i].tel.movel);
     }
-<<<<<<< HEAD
-}
-=======
 }
 
 #include <stdio.h>
@@ -238,4 +235,3 @@ void codigo_produto(char *marca, char *modelo, int *cod){
         );
     
 }
->>>>>>> 720fe7e28ccbb8abe2c9a73b7aabd19a0c8360f1

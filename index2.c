@@ -18,6 +18,7 @@ struct Telefone
 struct Clientes
 {
     char id[6];
+    char teste[100];
     char nome[50];
     char cpf[12];
     char sexo;
@@ -26,9 +27,11 @@ struct Clientes
 
 // Declarações Funções
 
-//CLientes
+// CLientes
 
 struct Clientes cadastrarClientes(struct Clientes cliente);
+
+void listarClientes(struct Clientes cliente[]);
 
 // Função Principal
 
@@ -50,13 +53,15 @@ int main()
         printf("6) Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
+        getchar(); // limpa o '\n' deixado pelo scanf
 
         switch (opcao)
         {
         case 1:
             if (numClientesCadastrados < limiteClientes)
             {
-                cadastrarClientes(clientes[numClientesCadastrados]);
+                clientes[numClientesCadastrados] = cadastrarClientes(clientes[numClientesCadastrados]);
+                numClientesCadastrados++;
             }
             else
             {
@@ -64,7 +69,7 @@ int main()
             }
             break;
         case 2:
-            // listarClientes(clientes);
+            listarClientes(clientes);
             break;
         case 3:
             printf("\nSaindo...\n");
@@ -82,11 +87,9 @@ struct Clientes cadastrarClientes(struct Clientes cliente)
 {
     printf("\nCadastro de cliente:\n");
 
-    getchar();
-
     printf("\nDigite o nome do cliente:\n");
-    scanf("%49[^\n]", cliente.nome);    
-
+    scanf("%[^\n]", cliente.nome);
+    
     printf("\nDigite o CPF do cliente:\n");
     scanf("%s", cliente.cpf);
 
@@ -99,7 +102,8 @@ struct Clientes cadastrarClientes(struct Clientes cliente)
     printf("\nDigite o telefone movel do cliente:\n");
     scanf("%s", cliente.tel.movel);
 
-    for(int contadorDeCasasCPF = 0; contadorDeCasasCPF < 6; contadorDeCasasCPF++){
+    for (int contadorDeCasasCPF = 0; contadorDeCasasCPF < 6; contadorDeCasasCPF++)
+    {
         cliente.id[contadorDeCasasCPF] = cliente.cpf[contadorDeCasasCPF];
     }
     cliente.id[6] = '\0';
@@ -109,4 +113,23 @@ struct Clientes cadastrarClientes(struct Clientes cliente)
     return cliente;
 }
 
+void listarClientes(struct Clientes cliente[])
+{
+    int contadorClientes = 0;
 
+    printf("\n=== Listagem de Clientes Cadastrados ===\n");
+
+    for (contadorClientes = 0; contadorClientes < numClientesCadastrados; contadorClientes++)
+    {
+        printf("ID: %s\n", cliente[contadorClientes].id);
+        printf("Nome: %s\n", cliente[contadorClientes].nome);
+        printf("CPF: %s\n", cliente[contadorClientes].cpf);
+        printf("Sexo (M/F): %c\n", cliente[contadorClientes].sexo);
+        printf("Telefone Fixo: %s\n", cliente[contadorClientes].tel.fixo);
+        printf("Telefone Movel: %s\n", cliente[contadorClientes].tel.movel);
+
+        printf("\n==============\n");
+    }
+
+    printf("\n=== Contamos com %d usuarios cadastrados na nossa base ===\n", numClientesCadastrados);
+}
