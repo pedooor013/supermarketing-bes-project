@@ -3,6 +3,8 @@
 #include <string.h>
 #include <locale.h>
 
+#define limiteProdutosCarrinho 15
+
 int limiteClientes = 15, limiteProdutos = 15;
 
 int numClientesCadastrados = 0, numProdutosCadastrados = 0;
@@ -32,6 +34,17 @@ struct Produtos
     double valor;
 };
 
+struct Carrinho
+{
+    struct Clientes cliente;
+    struct Produtos produto[limiteProdutosCarrinho];
+    int quantidadeProdutos[limiteProdutosCarrinho];
+    double subtotal;
+    char formaDePagamento;
+    double descontoPagamento;
+    double descontoCupom;
+    double totalCompra
+};
 // Declarações Funções
 
 // CLientes
@@ -48,16 +61,28 @@ struct Produtos cadastrarProdutos(struct Produtos produto);
 
 void listarProdutos(struct Produtos produto[]);
 
+//Carrinho
+
+struct Carrinho cadastrarCarrinho(struct Carrinho carrinho);
+
+double valorCompraSubtotal(struct Produtos produto, int quantidadeProdutos);
+
+double valorCompraTotal(struct Produtos produto, int quantidadeProdutos);
+
+double calculoDeDescontoPagamento(struct Carrinho carrinho);
+
+double calculoDeDescontoCupom(struct Carrinho carrinho);
+
 // Função Principal
+
 
 int main()
 {
     setlocale(LC_ALL, "Portuguese");
     struct Clientes clientes[limiteClientes];
     struct Produtos produto[limiteProdutos];
-
     int opcao;
-
+    
     do
     {
         printf("\nMenu de Clientes:\n");
@@ -232,3 +257,32 @@ void listarProdutos(struct Produtos produto[])
 
     printf("\n=== Contamos com %d produtos cadastrados na nossa base ===\n\n", numProdutosCadastrados);
 }
+
+struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
+{
+    struct Clientes clientes[numClientesCadastrados];
+    struct Produtos produto[numProdutosCadastrados];
+        
+    int clienteSelecionado;
+
+    printf("\n=== Carrinho de Compras ===\n");
+
+    printf("\nSelecione um cliente\n");
+
+    listarClientes(clientes);
+
+    scanf("%d", &clienteSelecionado);
+
+}
+
+/* struct Carrinho
+{
+    struct Clientes cliente;
+    struct Produtos produto[limiteProdutosCarrinho];
+    int quantidadeProdutos[limiteProdutosCarrinho];
+    double subtotal;
+    char formaDePagamento;
+    double descontoPagamento;
+    double descontoCupom;
+    double totalCompra
+}; */
