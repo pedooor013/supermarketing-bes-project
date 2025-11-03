@@ -5,8 +5,9 @@
 #include <stdbool.h>
 
 #define limiteProdutosCarrinho 15
-
-int limiteClientes = 15, limiteProdutos = 15, limiteDeCarrinhosCadastrados = 15;
+#define limiteClientes 15
+#define limiteProdutos 15
+#define limiteDeCarrinhosCadastrados 15
 
 int numClientesCadastrados = 0, numProdutosCadastrados = 0, numCarrinhosCadastrados = 0;
 
@@ -46,9 +47,16 @@ struct Carrinho
     double descontoCupom;
     double totalCompra
 };
+
+// Declaração de array em escopo global
+
+struct Clientes clientes[limiteClientes];
+struct Produtos produto[limiteProdutos];
+struct Carrinho carrinho[limiteDeCarrinhosCadastrados];
+
 // Declarações Funções
 
-// CLientes
+// Clientes
 
 struct Clientes cadastrarClientes(struct Clientes cliente);
 
@@ -62,7 +70,7 @@ struct Produtos cadastrarProdutos(struct Produtos produto);
 
 void listarProdutos(struct Produtos produto[]);
 
-//Carrinho
+// Carrinho
 
 struct Carrinho cadastrarCarrinho(struct Carrinho carrinho);
 
@@ -76,15 +84,11 @@ double calculoDeDescontoCupom(struct Carrinho carrinho);
 
 // Função Principal
 
-
 int main()
 {
     setlocale(LC_ALL, "Portuguese");
-    struct Clientes clientes[limiteClientes];
-    struct Produtos produto[limiteProdutos];
-    struct Carrinho carrinho[limiteDeCarrinhosCadastrados];
     int opcao;
-    
+
     do
     {
         printf("\nMenu de Clientes:\n");
@@ -132,7 +136,7 @@ int main()
             break;
 
         case 5:
-            cadastrarCarrinho(carrinho[numCarrinhosCadastrados  ]);
+            cadastrarCarrinho(carrinho[numCarrinhosCadastrados]);
 
             break;
 
@@ -267,31 +271,33 @@ void listarProdutos(struct Produtos produto[])
 
 struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
 {
-    struct Clientes clientes[limiteClientes];
-    struct Produtos produto[limiteProdutos];
-    
+
     char clienteSelecionado[7];
 
     bool usuarioEncontrado = false;
 
-    do{
+    do
+    {
         printf("\n=== Carrinho de Compras ===\n");
         printf("\nSelecione um cliente pelo seu ID:\n");
         listarClientes(clientes);
         printf("\nDigite: ");
         scanf(" %[^\n]", clienteSelecionado);
-    
-    for(int identificadorDeCliente = 0; identificadorDeCliente < numClientesCadastrados; identificadorDeCliente++){
-        if(clienteSelecionado == clientes[identificadorDeCliente].id){
-            strcpy(carrinho.cliente.id, clientes[identificadorDeCliente].id);
-            strcpy(carrinho.cliente.nome, clientes[identificadorDeCliente].nome);
-            usuarioEncontrado = true;
+
+        for (int identificadorDeCliente = 0; identificadorDeCliente < numClientesCadastrados; identificadorDeCliente++)
+        {
+            if (clienteSelecionado == clientes[identificadorDeCliente].id)
+            {
+                strcpy(carrinho.cliente.id, clientes[identificadorDeCliente].id);
+                strcpy(carrinho.cliente.nome, clientes[identificadorDeCliente].nome);
+                usuarioEncontrado = true;
+            }
         }
-    }
-    if(carrinho.cliente.id == ""){
-        printf("\n=== Usuario Invalido! ===\n");
-    }
-    }while(usuarioEncontrado != true);
+        if (carrinho.cliente.id[0] == "\0")
+        {
+            printf("\n=== Usuario Invalido! ===\n");
+        }
+    } while (usuarioEncontrado != true);
 
     printf("\nID CLIENTE: %s\n", carrinho.cliente.id);
     printf("\nNOME CLIENTE: %s\n", carrinho.cliente.nome);
