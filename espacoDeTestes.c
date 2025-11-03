@@ -45,7 +45,7 @@ struct Carrinho
     char formaDePagamento;
     double descontoPagamento;
     double descontoCupom;
-    double totalCompra
+    double totalCompra;
 };
 
 // Declaração de array em escopo global
@@ -275,10 +275,11 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
     char clienteSelecionado[7];
 
     bool usuarioEncontrado = false;
+    bool pararEscolhaProdutos = false;
+    printf("\n=== Carrinho de Compras ===\n");
 
     do
     {
-        printf("\n=== Carrinho de Compras ===\n");
         printf("\nSelecione um cliente pelo seu ID:\n");
         listarClientes(clientes);
         printf("\nDigite: ");
@@ -286,22 +287,23 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
 
         for (int identificadorDeCliente = 0; identificadorDeCliente < numClientesCadastrados; identificadorDeCliente++)
         {
-            if (clienteSelecionado == clientes[identificadorDeCliente].id)
+            if (strcmp(clienteSelecionado, clientes[identificadorDeCliente].id) == 0)
             {
                 strcpy(carrinho.cliente.id, clientes[identificadorDeCliente].id);
                 strcpy(carrinho.cliente.nome, clientes[identificadorDeCliente].nome);
                 usuarioEncontrado = true;
             }
         }
-        if (carrinho.cliente.id[0] == "\0")
+
+        if (carrinho.cliente.id[0] == '\0')
         {
             printf("\n=== Usuario Invalido! ===\n");
         }
     } while (usuarioEncontrado != true);
 
-    printf("\nID CLIENTE: %s\n", carrinho.cliente.id);
-    printf("\nNOME CLIENTE: %s\n", carrinho.cliente.nome);
+    do{
 
+    }
     return carrinho;
 }
 
