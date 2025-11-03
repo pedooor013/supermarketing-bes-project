@@ -273,9 +273,11 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
 {
 
     char clienteSelecionado[7];
+    int produtoSelecionado;
 
     bool usuarioEncontrado = false;
-    bool pararEscolhaProdutos = false;
+    char pararEscolhaProdutos;
+
     printf("\n=== Carrinho de Compras ===\n");
 
     do
@@ -301,9 +303,30 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
         }
     } while (usuarioEncontrado != true);
 
+    printf("\n\n=== Selecione até %d produtos ===\n\n", limiteProdutosCarrinho);
+    
     do{
+        int numProdutosNoCarrinho = 0;
+        bool pesquisaDeProdutos = false;
+        do{
 
-    }
+            listarProdutos(produto);
+            printf("Escolha o produto pelo seu ID que quer adicionar ao seu carrinho : ");
+            scanf("%d", &produtoSelecionado);
+
+            for(int identificadorDeProdutos = 0; identificadorDeProdutos < numProdutosCadastrados; identificadorDeProdutos++){
+                if(produtoSelecionado == produto[identificadorDeProdutos].id){
+                    carrinho.produto[numProdutosNoCarrinho].id = produto[identificadorDeProdutos].id;
+                    numProdutosNoCarrinho++;
+                    pesquisaDeProdutos = true;
+                }
+            }
+        }while(pesquisaDeProdutos != true);
+
+        printf("\n\nDeseja adicionar mais produtos ao seu carrinho: Sim (S) / Não (N)\n");
+        scanf("%c", &pararEscolhaProdutos);
+    }while((pararEscolhaProdutos != 'N') || (pararEscolhaProdutos != 'n'));
+    
     return carrinho;
 }
 
