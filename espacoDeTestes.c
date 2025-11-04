@@ -11,6 +11,7 @@
 
 int numClientesCadastrados = 0, numProdutosCadastrados = 0, numCarrinhosCadastrados = 0;
 
+
 /* Criação dos objetos para o programa */
 
 struct Telefone
@@ -88,6 +89,75 @@ int main()
 {
     setlocale(LC_ALL, "Portuguese");
     int opcao;
+
+    //CLIENTES TESTE
+        // --- DADOS DE TESTE ---
+    // Clientes de modelo (id com 6 chars + '\\0')
+    strcpy(clientes[0].id, "111111");
+    strcpy(clientes[0].nome, "Ana Silva");
+    strcpy(clientes[0].cpf, "11111111111");
+    clientes[0].sexo = 'F';
+    strcpy(clientes[0].tel.fixo, "11223344");
+    strcpy(clientes[0].tel.movel, "11999999999");
+
+    strcpy(clientes[1].id, "222222");
+    strcpy(clientes[1].nome, "Bruno Costa");
+    strcpy(clientes[1].cpf, "22222222222");
+    clientes[1].sexo = 'M';
+    strcpy(clientes[1].tel.fixo, "22334455");
+    strcpy(clientes[1].tel.movel, "11988888888");
+
+    strcpy(clientes[2].id, "333333");
+    strcpy(clientes[2].nome, "Carla Souza");
+    strcpy(clientes[2].cpf, "33333333333");
+    clientes[2].sexo = 'F';
+    strcpy(clientes[2].tel.fixo, "33445566");
+    strcpy(clientes[2].tel.movel, "11977777777");
+
+    strcpy(clientes[3].id, "444444");
+    strcpy(clientes[3].nome, "Daniel Oliveira");
+    strcpy(clientes[3].cpf, "44444444444");
+    clientes[3].sexo = 'M';
+    strcpy(clientes[3].tel.fixo, "44556677");
+    strcpy(clientes[3].tel.movel, "11966666666");
+
+    strcpy(clientes[4].id, "555555");
+    strcpy(clientes[4].nome, "Eduarda Lima");
+    strcpy(clientes[4].cpf, "55555555555");
+    clientes[4].sexo = 'F';
+    strcpy(clientes[4].tel.fixo, "55667788");
+    strcpy(clientes[4].tel.movel, "11955555555");
+
+    numClientesCadastrados = 5;
+
+    // Produtos de modelo — ID gerado pelo criarCodigoProduto()
+    strcpy(produto[0].marca, "Samsung");
+    strcpy(produto[0].modelo, "Galaxy S21");
+    produto[0].valor = 3500.00;
+    criarCodigoProduto(produto[0].marca, produto[0].modelo, &produto[0].id);
+
+    strcpy(produto[1].marca, "Apple");
+    strcpy(produto[1].modelo, "iPhone 14");
+    produto[1].valor = 5000.00;
+    criarCodigoProduto(produto[1].marca, produto[1].modelo, &produto[1].id);
+
+    strcpy(produto[2].marca, "Dell");
+    strcpy(produto[2].modelo, "Inspiron 15");
+    produto[2].valor = 4200.00;
+    criarCodigoProduto(produto[2].marca, produto[2].modelo, &produto[2].id);
+
+    strcpy(produto[3].marca, "Logitech");
+    strcpy(produto[3].modelo, "MX Master 3S");
+    produto[3].valor = 550.00;
+    criarCodigoProduto(produto[3].marca, produto[3].modelo, &produto[3].id);
+
+    strcpy(produto[4].marca, "Sony");
+    strcpy(produto[4].modelo, "WH-1000XM5");
+    produto[4].valor = 2100.00;
+    criarCodigoProduto(produto[4].marca, produto[4].modelo, &produto[4].id);
+
+    numProdutosCadastrados = 5;
+
 
     do
     {
@@ -324,7 +394,7 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
         }while(pesquisaDeProdutos != true);
 
         printf("\n\nDeseja adicionar mais produtos ao seu carrinho: Sim (S) / Não (N)\n");
-        scanf("%c", &pararEscolhaProdutos);
+        scanf(" %c", &pararEscolhaProdutos);
     }while((pararEscolhaProdutos != 'N') || (pararEscolhaProdutos != 'n'));
     
     return carrinho;
