@@ -265,14 +265,49 @@ struct Clientes cadastrarClientes(struct Clientes cliente)
 void listarClientes(struct Clientes cliente[])
 {
     int contadorClientes = 0;
+    int valido;
 
     printf("\n=== Listagem de Clientes Cadastrados ===\n");
 
     for (contadorClientes = 0; contadorClientes < numClientesCadastrados; contadorClientes++)
     {
         printf("ID: %s\n", cliente[contadorClientes].id);
-        printf("Nome: %s\n", cliente[contadorClientes].nome);
-        printf("CPF: %s\n", cliente[contadorClientes].cpf);
+        
+        //NOME
+        do
+        {
+            valido = 1;
+            printf("Nome: %s\n", cliente[contadorClientes].nome);
+            if (cliente[contadorClientes].nome[0] == '\0')
+            {
+                printf("Nome invalido! Digite novamente.\n");
+                valido = 0;
+            }
+        } while (!valido);
+        
+        //CPF
+        do
+        {
+            valido = 1;
+            printf("CPF: %s\n", cliente[contadorClientes].cpf);
+
+            int i =0;
+            while (cliente[contadorClientes].cpf[i] != '\0')
+            {
+                if (cliente[contadorClientes].cpf[i] < '0' || cliente[contadorClientes].cpf[i] > '9')
+            {
+                valido = 0;
+                break;
+            }
+            i++;
+        }
+        if (!valido);
+            printf("CPF invalido, digite novamente!");
+
+            }
+
+        
+        } while(!valido);
         printf("Sexo (M/F): %c\n", cliente[contadorClientes].sexo);
         printf("Telefone Fixo: %s\n", cliente[contadorClientes].tel.fixo);
         printf("Telefone Movel: %s\n", cliente[contadorClientes].tel.movel);
