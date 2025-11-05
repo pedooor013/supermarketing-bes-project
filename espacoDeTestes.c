@@ -3,6 +3,7 @@
 #include <string.h>
 #include <locale.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #define limiteProdutosCarrinho 15
 #define limiteClientes 15
@@ -375,9 +376,11 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
 
     printf("\n\n=== Selecione até %d produtos ===\n\n", limiteProdutosCarrinho);
     
+    int numProdutosNoCarrinho = 0;
+    bool pesquisaDeProdutos = false;
+    
     do{
-        int numProdutosNoCarrinho = 0;
-        bool pesquisaDeProdutos = false;
+    
         do{
 
             listarProdutos(produto);
@@ -386,7 +389,7 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
 
             for(int identificadorDeProdutos = 0; identificadorDeProdutos < numProdutosCadastrados; identificadorDeProdutos++){
                 if(produtoSelecionado == produto[identificadorDeProdutos].id){
-                    carrinho.produto[numProdutosNoCarrinho].id = produto[identificadorDeProdutos].id;
+                    carrinho.produto[numProdutosNoCarrinho] = produto[identificadorDeProdutos];
                     numProdutosNoCarrinho++;
                     pesquisaDeProdutos = true;
                 }
@@ -395,12 +398,38 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
 
         printf("\n\nDeseja adicionar mais produtos ao seu carrinho: Sim (S) / Não (N)\n");
         scanf(" %c", &pararEscolhaProdutos);
-    }while((pararEscolhaProdutos != 'N') || (pararEscolhaProdutos != 'n'));
+        pararEscolhaProdutos = toupper(pararEscolhaProdutos);
+    }while(pararEscolhaProdutos != 'N');
+
+    carrinho.subtotal = 0;
+    
+    printf("\n\n=== Produtos Cadastrados no Carrinho ===\n\n");
+    for(int contadorDeProdutos = 0; contadorDeProdutos < numProdutosNoCarrinho; contadorDeProdutos++){
+        printf("ID: %d\n", carrinho.produto[contadorDeProdutos].id);
+        printf("Marca: %s\n", carrinho.produto[contadorDeProdutos].marca);
+        printf("Modelo: %s\n", carrinho.produto[contadorDeProdutos].modelo);
+        printf("Valor: R$%.2f\n", carrinho.produto[contadorDeProdutos].valor);
+
+        printf("\n==============\n\n");
+
+        carrinho.subtotal = carrinho.subtotal + carrinho.produto[contadorDeProdutos].valor;
+    }
+
+    printf("Preço da compra: R$%.2lf", carrinho.subtotal);
+
     
     return carrinho;
 }
 
-/* struct Carrinho
+// struct Produtos
+// {
+//     int id;
+//     char marca[20];
+//     char modelo[50];
+//     double valor;
+// };
+
+/* struct Carrinho                                                                                       
 {
     struct Clientes cliente;
     struct Produtos produto[limiteProdutosCarrinho];
