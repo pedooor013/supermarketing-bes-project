@@ -12,7 +12,7 @@
 
 int numClientesCadastrados = 0, numProdutosCadastrados = 0, numCarrinhosCadastrados = 0;
 
-//Pix copia e cola e codigo de boleto FALSOS
+// Pix copia e cola e codigo de boleto FALSOS
 
 char *codigoBoleto[] = {
     "00190000090123456789000000000012345670000000",
@@ -29,8 +29,7 @@ char *codigoBoleto[] = {
     "03391000091011122233300000000067890120000000",
     "00192000091122233344400000000078901230000000",
     "39992000091233344455500000000089012340000000",
-    "42292000091344455566600000000090123450000000"
-};
+    "42292000091344455566600000000090123450000000"};
 
 char *pixCopiaCola[] = {
     "2025-11-05:01:Ab3kG9xY2MnQ4pR7sT1Z",
@@ -47,9 +46,7 @@ char *pixCopiaCola[] = {
     "2025-11-05:12:Dx3Qw9VkL5rTp2Sz7Ha",
     "2025-11-05:13:Ns6Pr2QwX8zLm1Tv4Kb",
     "2025-11-05:14:Pq4Vz9LmR2sXk7Tb1Hy",
-    "2025-11-05:15:Sz1Qw8RpL6nVx3Tm9Kb"
-};
-
+    "2025-11-05:15:Sz1Qw8RpL6nVx3Tm9Kb"};
 
 /* Criação dos objetos para o programa */
 
@@ -80,13 +77,15 @@ struct Carrinho
 {
     struct Clientes cliente;
     struct Produtos produto[limiteProdutosCarrinho];
-    int quantidadeProdutos[limiteProdutosCarrinho];
+    int quantidadeProdutos;
     double subtotal;
+    int quantidadeParcelas;
     double valorParcela;
     char formaDePagamento;
     double descontoPagamento;
     double descontoCupom;
     double totalCompra;
+    char codigoPagamento[60];
 };
 
 // Declaração de array em escopo global
@@ -115,13 +114,7 @@ void listarProdutos(struct Produtos produto[]);
 
 struct Carrinho cadastrarCarrinho(struct Carrinho carrinho);
 
-double valorCompraSubtotal(struct Produtos produto, int quantidadeProdutos);
-
-double valorCompraTotal(struct Produtos produto, int quantidadeProdutos);
-
-double calculoDeDescontoPagamento(struct Carrinho carrinho);
-
-double calculoDeDescontoCupom(struct Carrinho carrinho);
+void listarCarrinhos(struct Carrinho carrinhos[]);
 
 // Função Principal
 
@@ -129,9 +122,8 @@ int main()
 {
     setlocale(LC_ALL, "Portuguese");
     int opcao;
-
-    //CLIENTES TESTE
-        // --- DADOS DE TESTE ---
+    // CLIENTES TESTE
+    //  --- DADOS DE TESTE ---
     // Clientes de modelo (id com 6 chars + '\\0')
     strcpy(clientes[0].id, "111111");
     strcpy(clientes[0].nome, "Ana Silva");
@@ -197,7 +189,48 @@ int main()
     criarCodigoProduto(produto[4].marca, produto[4].modelo, &produto[4].id);
 
     numProdutosCadastrados = 5;
+    carrinho[numCarrinhosCadastrados].cliente = clientes[0];
+    carrinho[numCarrinhosCadastrados].produto[0] = produto[0];
+    carrinho[numCarrinhosCadastrados].quantidadeProdutos = 1;
+    carrinho[numCarrinhosCadastrados].subtotal = produto[0].valor;
+    carrinho[numCarrinhosCadastrados].formaDePagamento = 'C';
+    carrinho[numCarrinhosCadastrados].quantidadeParcelas = 3;
+    carrinho[numCarrinhosCadastrados].totalCompra = carrinho[numCarrinhosCadastrados].subtotal;
+    carrinho[numCarrinhosCadastrados].valorParcela = carrinho[numCarrinhosCadastrados].totalCompra / 3;
+    strcpy(carrinho[numCarrinhosCadastrados].codigoPagamento, "");
+    numCarrinhosCadastrados++;
 
+    // --- CARRINHO 2: BOLETO ---
+    carrinho[numCarrinhosCadastrados].cliente = clientes[0];
+    carrinho[numCarrinhosCadastrados].produto[0] = produto[0];
+    carrinho[numCarrinhosCadastrados].quantidadeProdutos = 1;
+    carrinho[numCarrinhosCadastrados].subtotal = produto[0].valor;
+    carrinho[numCarrinhosCadastrados].formaDePagamento = 'B';
+    carrinho[numCarrinhosCadastrados].quantidadeParcelas = 2;
+    carrinho[numCarrinhosCadastrados].totalCompra = carrinho[numCarrinhosCadastrados].subtotal;
+    carrinho[numCarrinhosCadastrados].valorParcela = carrinho[numCarrinhosCadastrados].totalCompra / 2;
+
+    int numArrayBoleto = rand() % (sizeof(codigoBoleto) / sizeof(codigoBoleto[0]));
+    strncpy(carrinho[numCarrinhosCadastrados].codigoPagamento, codigoBoleto[numArrayBoleto],
+            sizeof(carrinho[numCarrinhosCadastrados].codigoPagamento) - 1);
+    carrinho[numCarrinhosCadastrados].codigoPagamento[sizeof(carrinho[numCarrinhosCadastrados].codigoPagamento) - 1] = '\0';
+    numCarrinhosCadastrados++;
+
+    // --- CARRINHO 3: PIX ---
+    carrinho[numCarrinhosCadastrados].cliente = clientes[0];
+    carrinho[numCarrinhosCadastrados].produto[0] = produto[0];
+    carrinho[numCarrinhosCadastrados].quantidadeProdutos = 1;
+    carrinho[numCarrinhosCadastrados].subtotal = produto[0].valor;
+    carrinho[numCarrinhosCadastrados].formaDePagamento = 'P';
+    carrinho[numCarrinhosCadastrados].quantidadeParcelas = 1;
+    carrinho[numCarrinhosCadastrados].totalCompra = carrinho[numCarrinhosCadastrados].subtotal * 0.9; // 10% de desconto
+    carrinho[numCarrinhosCadastrados].valorParcela = carrinho[numCarrinhosCadastrados].totalCompra;
+
+    int numArrayPix = rand() % (sizeof(pixCopiaCola) / sizeof(pixCopiaCola[0]));
+    strncpy(carrinho[numCarrinhosCadastrados].codigoPagamento, pixCopiaCola[numArrayPix],
+            sizeof(carrinho[numCarrinhosCadastrados].codigoPagamento) - 1);
+    carrinho[numCarrinhosCadastrados].codigoPagamento[sizeof(carrinho[numCarrinhosCadastrados].codigoPagamento) - 1] = '\0';
+    numCarrinhosCadastrados++;
 
     do
     {
@@ -216,15 +249,10 @@ int main()
         switch (opcao)
         {
         case 1:
-            if (numClientesCadastrados < limiteClientes)
-            {
-                clientes[numClientesCadastrados] = cadastrarClientes(clientes[numClientesCadastrados]);
-                numClientesCadastrados++;
-            }
-            else
-            {
-                printf("\nLimite de clientes atingido!\n");
-            }
+
+            (numClientesCadastrados < limiteClientes)
+                ? (clientes[numClientesCadastrados] = cadastrarClientes(clientes[numClientesCadastrados]), numClientesCadastrados++)
+                : printf("\n=== Limite de clientes atingido ===\n");
 
             break;
 
@@ -236,7 +264,7 @@ int main()
         case 3:
             (numProdutosCadastrados < limiteProdutos)
                 ? (produto[numProdutosCadastrados] = cadastrarProdutos(produto[numProdutosCadastrados]), numProdutosCadastrados++)
-                : printf("\n=== Limite de produtos atingido! ===\n");
+                : printf("\n=== Limite de produtos atingido ===\n");
 
             break;
 
@@ -246,11 +274,17 @@ int main()
             break;
 
         case 5:
-            cadastrarCarrinho(carrinho[numCarrinhosCadastrados]);
+            (numCarrinhosCadastrados < limiteDeCarrinhosCadastrados)
+                ? (carrinho[numCarrinhosCadastrados] = cadastrarCarrinho(carrinho[numCarrinhosCadastrados]), numCarrinhosCadastrados++)
+                : printf("\n=== Limite de carrinhos atingidos ===\n");
+
+            break;
+        case 6:
+            listarCarrinhos(carrinho);
 
             break;
 
-        case 6:
+        case 7:
             printf("\nSaindo...\n");
             return 0;
 
@@ -414,36 +448,44 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
     } while (usuarioEncontrado != true);
 
     printf("\n\n=== Selecione até %d produtos ===\n\n", limiteProdutosCarrinho);
-    
+
     int numProdutosNoCarrinho = 0;
     bool pesquisaDeProdutos = false;
-    
-    do{
-    
-        do{
+
+    do
+    {
+
+        do
+        {
 
             listarProdutos(produto);
             printf("Escolha o produto pelo seu ID que quer adicionar ao seu carrinho : ");
             scanf("%d", &produtoSelecionado);
 
-            for(int identificadorDeProdutos = 0; identificadorDeProdutos < numProdutosCadastrados; identificadorDeProdutos++){
-                if(produtoSelecionado == produto[identificadorDeProdutos].id){
+            for (int identificadorDeProdutos = 0; identificadorDeProdutos < numProdutosCadastrados; identificadorDeProdutos++)
+            {
+                if (produtoSelecionado == produto[identificadorDeProdutos].id)
+                {
                     carrinho.produto[numProdutosNoCarrinho] = produto[identificadorDeProdutos];
                     numProdutosNoCarrinho++;
                     pesquisaDeProdutos = true;
                 }
             }
-        }while(pesquisaDeProdutos != true);
+        } while (pesquisaDeProdutos != true);
 
         printf("\n\nDeseja adicionar mais produtos ao seu carrinho: Sim (S) / Não (N)\n");
         scanf(" %c", &pararEscolhaProdutos);
         pararEscolhaProdutos = toupper(pararEscolhaProdutos);
-    }while(pararEscolhaProdutos != 'N');
+    } while (pararEscolhaProdutos != 'N');
 
     carrinho.subtotal = 0;
-    
+
     printf("\n\n=== Produtos Cadastrados no Carrinho ===\n\n");
-    for(int contadorDeProdutos = 0; contadorDeProdutos < numProdutosNoCarrinho; contadorDeProdutos++){
+
+    int contadorDeProdutos = 0;
+
+    for (contadorDeProdutos = 0; contadorDeProdutos < numProdutosNoCarrinho; contadorDeProdutos++)
+    {
         printf("ID: %d\n", carrinho.produto[contadorDeProdutos].id);
         printf("Marca: %s\n", carrinho.produto[contadorDeProdutos].marca);
         printf("Modelo: %s\n", carrinho.produto[contadorDeProdutos].modelo);
@@ -454,62 +496,130 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
         carrinho.subtotal = carrinho.subtotal + carrinho.produto[contadorDeProdutos].valor;
     }
 
+    carrinho.quantidadeProdutos = numProdutosCadastrados;
+
     printf("\n\nPreço da compra: R$%.2lf\n", carrinho.subtotal);
 
-    //APLICAR AQUI O CODIGO DO CUPOM
+    // APLICAR AQUI O CODIGO DO CUPOM
 
     char escolhaPagamento;
 
     printf("\n\nEscolha o metodo de pagamento: \nAté 10x no credito com juros (C);\nAté 6x no boleto sem juros (B);\nPix a vista com 10%% de desconto (P);\nDigite: ");
     scanf(" %c", &escolhaPagamento);
     escolhaPagamento = toupper(escolhaPagamento);
-    
+
     printf("\n==============\n\n");
-    
+
     int quantidadeDeParcelas;
-    
-    if(escolhaPagamento == 'C'){
-        do{
+
+    if (escolhaPagamento == 'C')
+    {
+        do
+        {
             printf("\n\nEm quantas vezes você deseja pagar: \nAté 3x sem juros;\nAté 6x juros de 5%%;\nAté 8x juros de 10%%;\nAté 10x 15%% de juros;\n\nDigite:");
             scanf("%d", &quantidadeDeParcelas);
-        }while((quantidadeDeParcelas > 10) || (quantidadeDeParcelas <= 0));
-        
-        if(quantidadeDeParcelas >= 9){
+
+            carrinho.quantidadeParcelas = quantidadeDeParcelas;
+        } while ((quantidadeDeParcelas > 10) || (quantidadeDeParcelas <= 0));
+
+        if (quantidadeDeParcelas >= 9)
+        {
             carrinho.totalCompra = ((carrinho.subtotal * 15) / 100) + carrinho.subtotal;
-        }else if(quantidadeDeParcelas >= 7){
+        }
+        else if (quantidadeDeParcelas >= 7)
+        {
             carrinho.totalCompra = ((carrinho.subtotal * 10) / 100) + carrinho.subtotal;
-        }else if(quantidadeDeParcelas >= 4){
+        }
+        else if (quantidadeDeParcelas >= 4)
+        {
             carrinho.totalCompra = ((carrinho.subtotal * 5) / 100) + carrinho.subtotal;
-        }else{
+        }
+        else
+        {
             carrinho.totalCompra = carrinho.subtotal;
         }
         carrinho.valorParcela = (carrinho.totalCompra / quantidadeDeParcelas);
         printf("\nValor final da compra: R$%.2lf;\nValor de cada parcela: R$%.2lf", carrinho.totalCompra, carrinho.valorParcela);
-    }else if(escolhaPagamento == 'B'){
-        
-        do{
+    }
+    else if (escolhaPagamento == 'B')
+    {
+
+        do
+        {
             printf("\n\nEm quantas vezes você deseja pagar:\nDigite:");
             scanf("%d", &quantidadeDeParcelas);
-        }while((quantidadeDeParcelas > 6) || (quantidadeDeParcelas <= 0));
+        } while ((quantidadeDeParcelas > 6) || (quantidadeDeParcelas <= 0));
 
         carrinho.totalCompra = carrinho.subtotal;
         carrinho.valorParcela = carrinho.totalCompra / quantidadeDeParcelas;
-        
+
         printf("\nValor final da compra: R$%.2lf;\nValor de cada parcela: R$%.2lf;", carrinho.totalCompra, carrinho.valorParcela);
-        
+
         int numArrayBoleto = rand() % 15;
 
-        printf("\n\nCodigo de boleto gerado: %s\n\n", codigoBoleto[numArrayBoleto]);
+        strncpy(carrinho.codigoPagamento, codigoBoleto[numArrayBoleto], sizeof(carrinho.codigoPagamento) - 1);
+        carrinho.codigoPagamento[sizeof(carrinho.codigoPagamento) - 1] = '\0';
 
-    }else if(escolhaPagamento == 'P'){
+        printf("\n\nCodigo de boleto gerado: %s\n\n", carrinho.codigoPagamento);
+    }
+    else if (escolhaPagamento == 'P')
+    {
         carrinho.totalCompra = (carrinho.subtotal - ((carrinho.subtotal * 10) / 100));
         printf("\nValor final da compra: R$%.2lf;", carrinho.totalCompra);
 
-        int numArrayPix = rand() % 15; 
+        int numArrayPix = rand() % 15;
 
-        printf("\n\nPix copia e cola gerado: %s\n\n", pixCopiaCola[numArrayPix]);
+        strncpy(carrinho.codigoPagamento, pixCopiaCola[numArrayPix], sizeof(carrinho.codigoPagamento) - 1);
+        carrinho.codigoPagamento[sizeof(carrinho.codigoPagamento) - 1] = '\0';
+
+        printf("\n\nPix copia e cola gerado: %s\n\n", carrinho.codigoPagamento);
     }
-    
-    
+
     return carrinho;
+}
+
+void listarCarrinhos(struct Carrinho carrinhos[])
+{
+    printf("\n=== Carrinhos Cadastrados ===\n\n");
+
+    for (int contagemDeCarrinhos = 0; contagemDeCarrinhos < numCarrinhosCadastrados; contagemDeCarrinhos++)
+    {
+        printf("ID Cliente: %s\n", carrinho[contagemDeCarrinhos].cliente.id);
+        printf("Cliente: %s\n", carrinho[contagemDeCarrinhos].cliente.nome);
+        printf("\n=== Produtos Cadastrados ===\n\n");
+
+        for (int contadorDeProdutos = 0; contadorDeProdutos < carrinho[contagemDeCarrinhos].quantidadeProdutos; contadorDeProdutos++)
+        {
+            printf("ID: %d\n", carrinhos[contagemDeCarrinhos].produto[contadorDeProdutos].id);
+            printf("Marca: %s\n", carrinhos[contagemDeCarrinhos].produto[contadorDeProdutos].marca);
+            printf("Modelo: %s\n", carrinhos[contagemDeCarrinhos].produto[contadorDeProdutos].modelo);
+            printf("Valor: R$%.2f\n", carrinhos[contagemDeCarrinhos].produto[contadorDeProdutos].valor);
+
+            printf("\n==============\n\n");
+        }
+
+        printf("\n=== Informações de Pagamento ===\n\n");
+
+        if (carrinhos[contagemDeCarrinhos].formaDePagamento == 'C')
+        {
+            printf("Forma de pagamento: Credito em %dx \n", carrinhos[contagemDeCarrinhos].quantidadeParcelas);
+            printf("Valor Parcela: R$%.2lf\n", carrinhos[contagemDeCarrinhos].valorParcela);
+        }
+        else if (carrinhos[contagemDeCarrinhos].formaDePagamento == 'B')
+        {
+            printf("Forma de pagamento: Boleto em %dx \n", carrinhos[contagemDeCarrinhos].quantidadeParcelas);
+            printf("Valor Parcela: R$%.2lf\n", carrinhos[contagemDeCarrinhos].valorParcela);
+        }
+        else if (carrinhos[contagemDeCarrinhos].formaDePagamento == 'P')
+        {
+            printf("Forma de pagamento: Pix a vista \n");
+        }
+
+        printf("Valor Total: R$%.2lf\n", carrinhos[contagemDeCarrinhos].totalCompra);
+        (carrinhos[contagemDeCarrinhos].formaDePagamento != 'C')
+            ? printf("Codigo de Pagamento: %s", carrinhos[contagemDeCarrinhos].codigoPagamento)
+            : printf(" ");
+
+        printf("\n==============\n\n");
+    }
 }
