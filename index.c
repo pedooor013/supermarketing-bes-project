@@ -12,6 +12,15 @@
 
 int numClientesCadastrados = 0, numProdutosCadastrados = 0, numCarrinhosCadastrados = 0;
 
+char cupoms[5][31] = {
+        "COMPRAREH10",
+        "10PRAMIM",
+        "CUPOM10",
+        "MEDA10"
+    };
+
+        float descontoCupom = 0.9;
+
 bool valido;
 
 // Pix copia e cola e codigo de boleto FALSOS
@@ -454,17 +463,43 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
         carrinho.subtotal = carrinho.subtotal + carrinho.produto[contadorDeProdutos].valor;
     }
 
-    carrinho.quantidadeProdutos = numProdutosCadastrados;
+    carrinho.quantidadeProdutos = numProdutosNoCarrinho;
 
     printf("\n\nPreço da compra: R$%.2lf\n", carrinho.subtotal);
 
-    // APLICAR AQUI O CODIGO DO CUPOM
+    char cupom;
+    do
+    {
+        printf("Deseja adicionar um cupom: Sim (S) / Não (N)\n");
+        scanf(" %c", &cupom);
+        cupom = toupper(cupom);
+        if (cupom != 'S' && cupom != 'N')
+            printf("Insira uma resposta valida.\n");
+    } while ((cupom != 'S') && (cupom != 'N'));
+    
+    if (cupom == 'S')
+    {
+        char busca[31];
+        printf("Insira seu cupom: ");
+        scanf(" %[^\n]", busca);
+        for (int i = 0; i < 5; i++)
+        {
+            if (strcmp(busca, cupoms[i]) == 0)
+            {
+                printf("Cupom encontrado, aplicando desconto de dez por cento.\n");
+                carrinho.subtotal = carrinho.subtotal * descontoCupom;
+                printf("\n\nPreço da compra após cupom: R$%.2lf\n", carrinho.subtotal);
+            }
+        }
+    }
 
     char escolhaPagamento;
 
-    printf("\n\nEscolha o metodo de pagamento: \nAté 10x no credito com juros (C);\nAté 6x no boleto sem juros (B);\nPix a vista com 10%% de desconto (P);\nDigite: ");
-    scanf(" %c", &escolhaPagamento);
-    escolhaPagamento = toupper(escolhaPagamento);
+    do{
+        printf("\n\nEscolha o metodo de pagamento: \nAté 10x no credito com juros (C);\nAté 6x no boleto sem juros (B);\nPix a vista com 10%% de desconto (P);\nDigite: ");
+        scanf(" %c", &escolhaPagamento);
+        escolhaPagamento = toupper(escolhaPagamento);
+    }while(escolhaPagamento != 'C' && escolhaPagamento != 'B' && escolhaPagamento != 'P');
 
     printf("\n==============\n\n");
 

@@ -10,7 +10,7 @@
 #define limiteProdutos 15
 #define limiteDeCarrinhosCadastrados 15
 
-int numClientesCadastrados = 0, numProdutosCadastrados = 0, numCarrinhosCadastrados = 0;
+int numClientesCadastrados = 0, numProdutosCadastrados = 0, numCarrinhosCadastrados = 0, quantidadeExistenteDeCupons = 10;
 
 // Pix copia e cola e codigo de boleto FALSOS
 
@@ -117,8 +117,6 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho);
 void listarCarrinhos(struct Carrinho carrinhos[]);
 
 // Função Principal
-
-
 
 int main()
 {
@@ -265,7 +263,7 @@ int criarCodigoProduto(char *marca, char *modelo, int *id)
 
     return *id;
 }
-
+ 
 struct Produtos cadastrarProdutos(struct Produtos produto)
 {
 
@@ -396,37 +394,39 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
 
     // APLICAR AQUI O CODIGO DO CUPOM
     
-	char cupoms[4][31] = {
-	    "JUJULIANA",
-	    "GUIZINHO",
-	    "DETONINHO",
-	    "MEDA10"
-	};
-	float descontoCupom = 0.9;
-	
-    char cupom;
-	do {
-        printf("Deseja adicionar um cupom: Sim (S) / Não (N)\n");
-		scanf(" %c", &cupom);
-		if(cupom != 's' && cupom != 'n') printf("Insira uma resposta valida.\n");
-	} while((cupom != 's') && (cupom != 'n'));
+    char cupoms[quantidadeExistenteDeCupons][31] = {
+        "SUPERECONOMIA10",
+        "GUIZINHO",
+        "DETONINHO",
+        "MEDA10"};
+    float descontoCupom = 0.9;
 
-	if (cupom == 's')
-	{
-		char busca[31];
-		printf("Insira seu cupom: ");
-		scanf(" %s", &busca);
-		for (int i = 0; i < quantidadeExistenteDeCupons; i++ )
-		{
-		    if(strcmp(busca, cupoms[i]) == 0)
-		    {
-            printf("Cupom encontrado, aplicando desconto de dez por cento.\n");
-		    carrinho.subtotal = carrinho.subtotal * descontoCupom;
-		    printf("\n\nPreço da compra após cupom: R$%.2lf\n", carrinho.subtotal);
-		    }
-		}
-	}
-	// APLICAR AQUI O CODIGO DO CUPOM
+    char cupom;
+    do
+    {
+        printf("Deseja adicionar um cupom: Sim (S) / Não (N)\n");
+        scanf(" %c", &cupom);
+        cupom = toupper(cupom);
+        if (cupom != 'S' && cupom != 'N')
+            printf("Insira uma resposta valida.\n");
+    } while ((cupom != 'S') && (cupom != 'N'));
+    
+    if (cupom == 'S')
+    {
+        char busca[31];
+        printf("Insira seu cupom: ");
+        scanf(" %s", &busca);
+        for (int i = 0; i < quantidadeExistenteDeCupons; i++)
+        {
+            if (strcmp(busca, cupoms[i]) == 0)
+            {
+                printf("Cupom encontrado, aplicando desconto de dez por cento.\n");
+                carrinho.subtotal = carrinho.subtotal * descontoCupom;
+                printf("\n\nPreço da compra após cupom: R$%.2lf\n", carrinho.subtotal);
+            }
+        }
+    }
+    // APLICAR AQUI O CODIGO DO CUPOM
 
     char escolhaPagamento;
 
@@ -543,8 +543,8 @@ void listarCarrinhos(struct Carrinho carrinhos[])
 
         printf("Valor Total: R$%.2lf\n", carrinho[contagemDeCarrinhos].totalCompra);
         (carrinho[contagemDeCarrinhos].formaDePagamento != 'C')
-        ? printf("Codigo de Pagamento: %s", carrinho[contagemDeCarrinhos].codigoPagamento)
-        : printf("");
+            ? printf("Codigo de Pagamento: %s", carrinho[contagemDeCarrinhos].codigoPagamento)
+            : printf("");
 
         printf("\n==============\n\n");
     }
