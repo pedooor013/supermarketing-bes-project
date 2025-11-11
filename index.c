@@ -12,6 +12,8 @@
 
 int numClientesCadastrados = 0, numProdutosCadastrados = 0, numCarrinhosCadastrados = 0;
 
+bool valido;
+
 // Pix copia e cola e codigo de boleto FALSOS
 
 char *codigoBoleto[] = {
@@ -116,9 +118,12 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho);
 
 void listarCarrinhos(struct Carrinho carrinhos[]);
 
+// Funções de validação
+
+int ehSomenteNumeros(const char *texto);
+
+double ehSomenteNumerosDouble(char *str);
 // Função Principal
-
-
 
 int main()
 {
@@ -151,7 +156,9 @@ int main()
             break;
 
         case 2:
-            listarClientes(clientes);
+        (numClientesCadastrados > 0)
+            ? (listarClientes(clientes))
+            : printf("\n=== Nenhum usuário Cadastrado! ===\n");
 
             break;
 
@@ -163,18 +170,24 @@ int main()
             break;
 
         case 4:
-            listarProdutos(produto);
+            (numProdutosCadastrados > 0)
+                ? (listarProdutos(produto))
+                : printf("\n=== Nenhum usuário Cadastrado! ===\n");
 
             break;
 
         case 5:
-            (numCarrinhosCadastrados < limiteDeCarrinhosCadastrados)
+        (numProdutosCadastrados > 0 && numClientesCadastrados > 0)    
+            ? ((numCarrinhosCadastrados < limiteDeCarrinhosCadastrados)
                 ? (carrinho[numCarrinhosCadastrados] = cadastrarCarrinho(carrinho[numCarrinhosCadastrados]), numCarrinhosCadastrados++)
-                : printf("\n=== Limite de carrinhos atingidos ===\n");
+                : printf("\n=== Limite de carrinhos atingidos ===\n"))
+            : printf("\n=== Cadastre pelo menos um cliente/produtos para criar um carrinho ===\n");
 
             break;
         case 6:
-            listarCarrinhos(carrinho);
+        (numCarrinhosCadastrados > 0)
+            ? (listarCarrinhos(carrinho))
+            : printf("\n=== Nenhum carrinho cadastrado ===\n");
 
             break;
 
@@ -185,10 +198,36 @@ int main()
         default:
             printf("\nOpcao invalida. Tente novamente.\n");
         }
-    } while (opcao != 6);
+    } while (opcao != 7);
 
     return 0;
 }
+
+int ehSomenteNumeros(const char *texto) {
+    int i = 0;
+    int achouPonto = 0;
+
+    // Permite sinal negativo só no primeiro caractere
+    if (texto[0] == '-') {
+        i = 1; 
+        if (texto[1] == '\0')
+            return false; // só "-", inválido
+    }
+
+    for (; texto[i] != '\0'; i++) {
+        if (texto[i] == '.') {
+            if (achouPonto) {
+                return false; // Já tinha ponto → inválido
+            }
+            achouPonto = 1;
+        }
+        else if (!isdigit(texto[i])) {
+            return false; // Não é número nem ponto
+        }
+    }
+    return true; // válido
+}
+
 // Funções Clientes
 
 struct Clientes cadastrarClientes(struct Clientes cliente)
@@ -205,18 +244,40 @@ struct Clientes cadastrarClientes(struct Clientes cliente)
         cliente.nome[tamanhoNome - 1] = '\0';
     }
 
-    printf("\nDigite o CPF do cliente:\n");
-    scanf("%s", cliente.cpf);
+    size_t numCaracteresCPF;
+    do{
+        printf("\nDigite o CPF do cliente:\n");
+        scanf("%s", cliente.cpf);
 
-    printf("\nDigite o sexo (M/F) do cliente:\n");
-    scanf(" %c", &cliente.sexo);
+        numCaracteresCPF = strlen(cliente.cpf); 
+        valido = ehSomenteNumeros(cliente.cpf);
+    }while(numCaracteresCPF != 11 || valido == false);
 
+    do{
+        printf("\nDigite o sexo (M/F) do cliente:\n");
+        scanf(" %c", &cliente.sexo);
+        cliente.sexo = toupper(cliente.sexo);
+    }while(cliente.sexo != 'M' && cliente.sexo != 'F');
+
+    size_t numDigitosTelefone;
+    do{
+    
     printf("\nDigite o tefone fixo do cliente:\n");
     scanf("%s", cliente.tel.fixo);
+    
+    numDigitosTelefone = strlen(cliente.tel.fixo);
+    valido = ehSomenteNumeros(cliente.tel.fixo);
+    
+}while(numDigitosTelefone != 10 || valido == false);
 
-    printf("\nDigite o telefone movel do cliente:\n");
-    scanf("%s", cliente.tel.movel);
-
+    do{
+        printf("\nDigite o telefone movel do cliente:\n");
+        scanf("%s", cliente.tel.movel);
+        numDigitosTelefone = strlen(cliente.tel.movel);
+        valido = ehSomenteNumeros(cliente.tel.movel);
+        
+    }while(numDigitosTelefone != 11 || valido == false);
+        
     for (int contadorDeCasasCPF = 0; contadorDeCasasCPF < 7; contadorDeCasasCPF++)
     {
         cliente.id[contadorDeCasasCPF] = cliente.cpf[contadorDeCasasCPF];
@@ -268,7 +329,6 @@ int criarCodigoProduto(char *marca, char *modelo, int *id)
 
 struct Produtos cadastrarProdutos(struct Produtos produto)
 {
-
     printf("\n\n=== Cadastro de Produtos ===\n");
 
     printf("Digite a marca do produto: ");
@@ -277,8 +337,8 @@ struct Produtos cadastrarProdutos(struct Produtos produto)
     printf("Digite o modelo do produto: ");
     scanf(" %[^\n]", produto.modelo);
 
-    printf("Digite o valor do produto: R$");
-    scanf("%lf", &produto.valor);
+        printf("Digite o valor do produto: R$");
+        scanf("%lf", &produto.valor);
 
     produto.id = criarCodigoProduto(produto.marca, produto.modelo, &produto.id);
 
@@ -286,6 +346,7 @@ struct Produtos cadastrarProdutos(struct Produtos produto)
 
     return produto;
 }
+
 
 void listarProdutos(struct Produtos produto[])
 {
@@ -322,7 +383,7 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
     {
         printf("\nSelecione um cliente pelo seu ID:\n");
         listarClientes(clientes);
-        printf("\nDigite: ");
+        printf("\nDigite o ID: ");
         scanf(" %[^\n]", clienteSelecionado);
 
         for (int identificadorDeCliente = 0; identificadorDeCliente < numClientesCadastrados; identificadorDeCliente++)
@@ -364,6 +425,9 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
                     numProdutosNoCarrinho++;
                     pesquisaDeProdutos = true;
                 }
+            }
+            if(pesquisaDeProdutos == false){
+                printf("=== Produto invalido! Digite novamente ===");
             }
         } while (pesquisaDeProdutos != true);
 
@@ -471,8 +535,7 @@ struct Carrinho cadastrarCarrinho(struct Carrinho carrinho)
 
     return carrinho;
 }
-
-void listarCarrinhos(struct Carrinho carrinhos[])
+void listarCarrinhos(struct Carrinho carrinho[])
 {
     printf("\n=== Carrinhos Cadastrados ===\n\n");
 
@@ -512,7 +575,7 @@ void listarCarrinhos(struct Carrinho carrinhos[])
         printf("Valor Total: R$%.2lf\n", carrinho[contagemDeCarrinhos].totalCompra);
         (carrinho[contagemDeCarrinhos].formaDePagamento != 'C')
         ? printf("Codigo de Pagamento: %s", carrinho[contagemDeCarrinhos].codigoPagamento)
-        : printf("");
+        : printf(" ");
 
         printf("\n==============\n\n");
     }
