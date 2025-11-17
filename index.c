@@ -216,25 +216,24 @@ int ehSomenteNumeros(const char *texto) {
     int i = 0;
     int achouPonto = 0;
 
-    // Permite sinal negativo só no primeiro caractere
     if (texto[0] == '-') {
         i = 1; 
         if (texto[1] == '\0')
-            return false; // só "-", inválido
+            return false; 
     }
 
     for (; texto[i] != '\0'; i++) {
         if (texto[i] == '.') {
             if (achouPonto) {
-                return false; // Já tinha ponto → inválido
+                return false; 
             }
             achouPonto = 1;
         }
         else if (!isdigit(texto[i])) {
-            return false; // Não é número nem ponto
+            return false; 
         }
     }
-    return true; // válido
+    return true; 
 }
 
 // Funções Clientes
